@@ -28,7 +28,8 @@ const electronAPI = {
   setCookiePolicy: (policy) => ipcRenderer.invoke('set-cookie-policy', policy),
 
   closeApp: () => ipcRenderer.invoke('close-app'),
-
+  downloadAndInstallUpdate: (data) => ipcRenderer.invoke('download-and-install-update', data),
+  onUpdateDownloadProgress: (cb) => ipcRenderer.on('update-download-progress', (_, data) => cb(data)),
   onGlobalShortcut: (callback) =>
     ipcRenderer.on('global-shortcut', (event, data) => callback(data)),
   onOpenNewTab: (cb) => 
@@ -41,10 +42,9 @@ const electronAPI = {
     ipcRenderer.on('download-completed', (_, data) => cb(data)),
   onDownloadFailed: (cb) =>
     ipcRenderer.on('download-failed', (_, data) => cb(data)),
-
   cancelDownload: (id) => ipcRenderer.invoke('cancel-download', id),
   deleteDownloadFile: (path) => ipcRenderer.invoke('delete-download-file', path),
-  showItemInFolder: (path) => shell.showItemInFolder(path),
+  showItemInFolder: (path) => ipcRenderer.invoke('show-item-in-folder', path),  
   openFile: (path) => shell.openPath(path),
   getCookies: () => ipcRenderer.invoke('get-cookies'),
   loadSettings: () => ipcRenderer.invoke('settings:load'),

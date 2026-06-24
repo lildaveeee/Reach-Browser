@@ -1,7 +1,7 @@
 {
-  "name": "davos-browser",
-  "version": "0.1.0",
-  "description": "Electron-based browser with tabs, navigation, and webviews.",
+  "name": "reach-browser",
+  "version": "0.1.1",
+  "description": "A browser based on navigation, functionality and customisability.",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -12,7 +12,8 @@
   },
   "build": {
     "appId": "com.davos.browser",
-    "productName": "Davos Browser",
+    "productName": "Reach Browser",
+    "artifactName": "Reach-Browser.${ext}",
     "directories": {
       "output": "dist",
       "buildResources": "buildResources"
@@ -23,15 +24,15 @@
     },
     "win": {
       "target": ["nsis"],
-      "icon": "buildResources/icon.ico"
+      "icon": "buildResources/icon.png"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     }
   },
-  "author": "davos",
-  "license": "MIT",
+  "author": "daveee",
+  "license": "Mozilla Public License 2.0",
   "devDependencies": {
     "electron": "^26.6.10",
     "electron-builder": "^26.8.1"

@@ -2114,23 +2114,17 @@ button img {
  
 .downloads-badge {
   display: none;
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  background: var(--accent);
-  color: #fff;
-  font-size: 0.62rem;
-  font-weight: 700;
-  border-radius: 999px;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-  pointer-events: none;
-  box-shadow: 0 0 0 2px var(--surface);
-  letter-spacing: 0;
+}
+
+#downloads-btn.has-active-downloads {
+  animation: dl-ring 1.8s ease-in-out infinite;
+  border-color: var(--accent) !important;
+}
+
+@keyframes dl-ring {
+  0%   { box-shadow: 0 0 0 0px var(--accent-soft); }
+  50%  { box-shadow: 0 0 0 4px var(--accent-soft), 0 0 8px 2px var(--accent-soft); }
+  100% { box-shadow: 0 0 0 0px var(--accent-soft); }
 }
   
 .downloads-panel {

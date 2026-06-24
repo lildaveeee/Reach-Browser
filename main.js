@@ -1,4 +1,4 @@
-const { app, BrowserWindow, session, ipcMain, Menu, clipboard } = require('electron');
+const { app, BrowserWindow, session, ipcMain, Menu, clipboard, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const https = require('https');
@@ -6,7 +6,6 @@ const http = require('http');
 const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 
 let mainWindow = null;
-
 let cookiePolicy = {
   enabled: true,
   level: 'blockAll',
@@ -15,8 +14,6 @@ let cookiePolicy = {
     { domain: 'youtube.com', action: 'allow' }
   ]
 };
-
-// ─── AD BLOCKER ────────────────────────────────────────────────────────────────
 
 let blockedDomains = new Set();
 let adBlockEnabled = true;
@@ -53,7 +50,6 @@ function parseDomains(text) {
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith('!') || trimmed.startsWith('#') || trimmed.startsWith('[')) continue;
-    // ||domain.com^ — network domain block rules
     const match = trimmed.match(/^\|\|([a-z0-9._%-]+)\^/);
     if (match) {
       const domain = match[1].replace(/^www\./, '');
@@ -76,7 +72,6 @@ function loadCachedDomains() {
   try {
     if (!fs.existsSync(ADBLOCK_CACHE_PATH)) return null;
     const raw = JSON.parse(fs.readFileSync(ADBLOCK_CACHE_PATH, 'utf8'));
-    // Cache valid for 24 hours
     if (Date.now() - raw.timestamp > 24 * 60 * 60 * 1000) return null;
     return new Set(raw.domains);
   } catch {
@@ -108,19 +103,15 @@ async function loadAdBlockLists(forceRefresh = false) {
     saveCachedDomains(merged);
     console.log(`Ad blocker: loaded ${blockedDomains.size} domains`);
   } else {
-    // Keep existing if fetch failed
     console.log('Ad blocker: fetch returned no results, keeping existing list');
   }
 }
 
-// Resource types that should never be blocked (page structure, styles, scripts
-// that could be first-party, navigation itself)
 const SAFE_RESOURCE_TYPES = new Set([
   'mainFrame', 'subFrame', 'stylesheet', 'script', 'font',
   'media', 'websocket', 'other'
 ]);
 
-// Only these request types are candidates for ad blocking
 const BLOCKABLE_RESOURCE_TYPES = new Set([
   'image', 'xhr', 'ping', 'subResource'
 ]);
@@ -128,37 +119,30 @@ const BLOCKABLE_RESOURCE_TYPES = new Set([
 function getBaseDomain(hostname) {
   if (!hostname) return '';
   const parts = hostname.replace(/^www\./, '').split('.');
-  // Return eTLD+1 (e.g. "doubleclick.net" from "ad.doubleclick.net")
   return parts.length >= 2 ? parts.slice(-2).join('.') : hostname;
 }
 
 function isBlockedByAdBlock(details) {
   if (!adBlockEnabled || blockedDomains.size === 0) return false;
 
-  // Never block safe resource types
   const resourceType = details.resourceType || details.type || '';
   if (SAFE_RESOURCE_TYPES.has(resourceType)) return false;
 
-  // Only block known ad/tracker resource types
   if (resourceType && !BLOCKABLE_RESOURCE_TYPES.has(resourceType)) return false;
 
   try {
     const reqHostname = new URL(details.url).hostname.replace(/^www\./, '');
     if (!reqHostname) return false;
 
-    // Never block first-party requests (same base domain as initiator)
     const initiator = details.initiator || details.referrer || '';
     if (initiator) {
       try {
         const initHostname = new URL(initiator).hostname.replace(/^www\./, '');
-        // Same base domain = first party, never block
         if (getBaseDomain(reqHostname) === getBaseDomain(initHostname)) return false;
-        // Also never block if the request domain IS the initiator (exact match)
         if (reqHostname === initHostname) return false;
       } catch {}
     }
 
-    // Check request hostname against block list
     const parts = reqHostname.split('.');
     for (let i = 0; i < parts.length - 1; i++) {
       if (blockedDomains.has(parts.slice(i).join('.'))) return true;
@@ -168,8 +152,6 @@ function isBlockedByAdBlock(details) {
     return false;
   }
 }
-
-// ─── COOKIE HELPERS ────────────────────────────────────────────────────────────
 
 function getHost(url) {
   try { return new URL(url).hostname; } catch { return ''; }
@@ -213,8 +195,6 @@ function shouldBlockCookies(details) {
   return false;
 }
 
-// ─── SETTINGS ──────────────────────────────────────────────────────────────────
-
 app.commandLine.appendSwitch('disable-features', 'AutofillServerCommunication');
 
 let cachedSettings = null;
@@ -237,8 +217,6 @@ async function saveSharedSettings(data) {
     await fs.promises.writeFile(settingsPath, JSON.stringify(data, null, 2), 'utf8');
   } catch {}
 }
-
-// ─── WINDOW ────────────────────────────────────────────────────────────────────
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -278,24 +256,15 @@ function createWindow() {
   win.setMenuBarVisibility(false);
 }
 
-// ─── APP READY ─────────────────────────────────────────────────────────────────
-
 app.whenReady().then(async () => {
 
-  // Load saved settings to pick up adblock preference before network hooks fire
   const savedSettings = await loadSharedSettings();
-  adBlockEnabled = savedSettings?.privacy?.adBlockEnabled !== false; // default true
-
-  // Start fetching block lists in background (non-blocking)
+  adBlockEnabled = savedSettings?.privacy?.adBlockEnabled !== false;
   loadAdBlockLists().catch(() => {});
-
-  // ── Permissions ──
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
     if (permission === 'fullscreen') return callback(true);
     return callback(false);
   });
-
-  // ── Ad blocking: cancel third-party ad/tracker requests ──
   session.defaultSession.webRequest.onBeforeRequest(
     { urls: ['*://*/*'] },
     (details, callback) => {
@@ -306,7 +275,6 @@ app.whenReady().then(async () => {
     }
   );
 
-  // ── Cookie stripping ──
   session.defaultSession.webRequest.onBeforeSendHeaders(
     { urls: ['*://*/*'] },
     (details, callback) => {
@@ -333,7 +301,6 @@ app.whenReady().then(async () => {
     }
   );
 
-  // ── Downloads ──
   session.defaultSession.on('will-download', (event, item, webContents) => {
     const id = `dl-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const ownerWin = BrowserWindow.fromWebContents(webContents) || mainWindow;
@@ -370,7 +337,6 @@ app.whenReady().then(async () => {
     });
   });
 
-  // ── Web contents created ──
   app.on('web-contents-created', (event, contents) => {
     contents.setWindowOpenHandler(({ url, disposition }) => {
       if (contents.getType() !== 'window') {
@@ -434,10 +400,8 @@ app.whenReady().then(async () => {
 
   app.on('browser-window-closed', () => { mainWindow = null; });
 
-  // ── IPC: Settings ──
   ipcMain.handle('settings:load', async () => loadSharedSettings());
   ipcMain.handle('settings:save', async (event, data) => {
-    // Sync adblock state when settings are saved
     if (data?.privacy?.adBlockEnabled !== undefined) {
       adBlockEnabled = data.privacy.adBlockEnabled;
     }
@@ -445,7 +409,6 @@ app.whenReady().then(async () => {
     return { success: true };
   });
 
-  // ── IPC: Ad blocker ──
   ipcMain.handle('set-adblock-enabled', (event, enabled) => {
     adBlockEnabled = !!enabled;
     return { success: true };
@@ -470,7 +433,6 @@ app.whenReady().then(async () => {
     return { success: true, domainCount: blockedDomains.size };
   });
 
-  // ── IPC: Window management ──
   ipcMain.handle('move-tab-to-window', (event, { url, title, targetWindowId }) => {
     const allWins = BrowserWindow.getAllWindows();
     const targetWin = targetWindowId ? allWins.find(w => w.id === targetWindowId) : null;
@@ -559,12 +521,10 @@ app.whenReady().then(async () => {
     return { success: true };
   });
 
-  // ── IPC: Cookies ──
   ipcMain.handle('get-cookies', async () => {
     try { return await session.defaultSession.cookies.get({}); } catch { return []; }
   });
 
-  // ── IPC: Context menu ──
   ipcMain.handle('show-context-menu', (event, params) => {
     const menuTemplate = [];
 
@@ -609,7 +569,6 @@ app.whenReady().then(async () => {
     menu.popup({ window });
   });
 
-  // ── IPC: Clear data ──
   ipcMain.handle('browser-clear-data', async (event, type) => {
     const ses = session.defaultSession;
     try {
@@ -637,11 +596,89 @@ app.whenReady().then(async () => {
     }
   });
 
-  // ── IPC: Misc ──
   ipcMain.handle('close-app', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
     if (window) window.close();
     return { success: true };
+  });
+  ipcMain.handle('download-and-install-update', async (event, { url, filename }) => {
+    const win = BrowserWindow.fromWebContents(event.sender);
+
+    // on Linux AppImage, process.execPath is the mounted read-only path
+    // APPIMAGE env var points to the actual .AppImage file on disk
+    const actualPath = process.platform === 'linux'
+      ? (process.env.APPIMAGE || process.execPath)
+      : process.execPath;
+
+    const tmpPath = actualPath + '.update.tmp';
+    const file = fs.createWriteStream(tmpPath);
+
+    return new Promise((resolve) => {
+      function doRequest(requestUrl) {
+        const client = requestUrl.startsWith('https') ? https : http;
+        client.get(requestUrl, (res) => {
+          if (res.statusCode === 301 || res.statusCode === 302) {
+            return doRequest(res.headers.location);
+          }
+
+          const total = parseInt(res.headers['content-length'] || '0', 10);
+          let received = 0;
+
+          res.on('data', (chunk) => {
+            received += chunk.length;
+            if (total > 0 && win && !win.isDestroyed()) {
+              win.webContents.send('update-download-progress', {
+                percent: Math.round((received / total) * 100),
+                received,
+                total
+              });
+            }
+          });
+
+          res.pipe(file);
+
+          file.on('finish', () => {
+            file.close(() => {
+              try {
+                if (process.platform === 'linux') {
+                  fs.renameSync(tmpPath, actualPath);
+                  fs.chmodSync(actualPath, 0o755);
+                  const { spawn } = require('child_process');
+                  setTimeout(() => {
+                    spawn(actualPath, [], { detached: true, stdio: 'ignore' }).unref();
+                    app.quit();
+                  }, 500);
+                } else if (process.platform === 'win32') {
+                  const installDir = path.dirname(actualPath);
+                  const newExePath = path.join(installDir, filename);
+                  fs.renameSync(tmpPath, newExePath);
+                  const { spawn } = require('child_process');
+                  setTimeout(() => {
+                    spawn(newExePath, ['/S'], { detached: true, stdio: 'ignore' }).unref();
+                    app.quit();
+                  }, 500);
+                }
+                resolve({ success: true, path: actualPath });
+              } catch (err) {
+                try { fs.unlinkSync(tmpPath); } catch {}
+                resolve({ success: false, message: err.message });
+              }
+            });
+          });
+
+          file.on('error', (err) => {
+            try { fs.unlinkSync(tmpPath); } catch {}
+            resolve({ success: false, message: err.message });
+          });
+
+        }).on('error', (err) => {
+          try { fs.unlinkSync(tmpPath); } catch {}
+          resolve({ success: false, message: err.message });
+        });
+      }
+
+      doRequest(url);
+    });
   });
   ipcMain.handle('get-app-version', () => app.getVersion());
   ipcMain.handle('open-external', (_, url) => shell.openExternal(url));
@@ -678,14 +715,14 @@ app.whenReady().then(async () => {
   });
 
   ipcMain.handle('show-item-in-folder', (event, filePath) => {
-    const { shell } = require('electron');
-    shell.showItemInFolder(filePath);
+    if (!filePath) return { success: false };
+    const dir = path.dirname(filePath);
+    shell.openPath(dir);
     return { success: true };
   });
 
   ipcMain.handle('open-file', (event, filePath) => {
-    const { shell } = require('electron');
-    shell.openPath(filePath);
+    if (filePath) shell.openPath(filePath);
     return { success: true };
   });
 

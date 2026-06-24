@@ -240,6 +240,7 @@ const defaultSettings = {
 };
 
 defaultSettings.bookmarks = [];
+defaultSettings.downloadFolder = '';
 
 let settings = { ...defaultSettings };
 let closedTabs = [];
@@ -1896,6 +1897,7 @@ function updateVerticalWidthVisibility() {
 function openSettings() {
   settingsModal.classList.add('open');
   settingsModal.setAttribute('aria-hidden', 'false');
+  setSettingsTab('general');
   populateSettingsUI();
   renderThemePresets();
   startHistoryLiveUpdates();
@@ -2280,7 +2282,7 @@ function createDownloadItemElement(dl) {
         </button>
       ` : ''}
       ${!isActive ? `
-        <button class="dl-btn dl-btn--remove" data-action="remove" data-id="${dl.id}" title="Remove from list">
+        <button class="dl-btn dl-btn--remove" data-action="remove" data-id="${dl.id}" data-path="${dl.savePath || ''}" title="Remove from list">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       ` : ''}
@@ -2331,8 +2333,8 @@ function handleDownloadAction(action, id, path) {
       break;
 
     case 'remove':
-      if (dl && dl.savePath && window.electronAPI && window.electronAPI.deleteDownloadFile) {
-        window.electronAPI.deleteDownloadFile(dl.savePath);
+      if (path && window.electronAPI?.deleteDownloadFile) {
+        window.electronAPI.deleteDownloadFile(path);
       }
       removeDownloadFromHistory(id);
       renderDownloadsList();
@@ -2371,13 +2373,12 @@ function removeDownloadFromHistory(id) {
 }
 
 function updateDownloadsBadge() {
-  if (!downloadsBadge) return;
+  if (!downloadsBtn) return;
   const activeCount = activeDownloads.size;
   if (activeCount > 0) {
-    downloadsBadge.textContent = activeCount > 9 ? '9+' : String(activeCount);
-    downloadsBadge.style.display = 'flex';
+    downloadsBtn.classList.add('has-active-downloads');
   } else {
-    downloadsBadge.style.display = 'none';
+    downloadsBtn.classList.remove('has-active-downloads');
   }
 }
 
@@ -3322,7 +3323,7 @@ async function checkForUpdates() {
   updateStatus.textContent = '';
 
   try {
-    const REPO = 'YOUR_GITHUB_USERNAME/YOUR_REPO_NAME'; // ← change this
+    const REPO = 'lildaveeee/Reach-Browser';
     const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`);
     if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
     const data = await res.json();
@@ -3333,11 +3334,46 @@ async function checkForUpdates() {
     if (latestTag && latestTag !== currentVersion) {
       updateStatus.textContent = `v${latestTag} available (you have v${currentVersion})`;
       updateStatus.style.color = 'var(--accent)';
-      checkUpdateBtn.textContent = 'Download update';
+      checkUpdateBtn.textContent = 'Download & Install';
       checkUpdateBtn.disabled = false;
-      checkUpdateBtn.addEventListener('click', () => {
-        window.electronAPI?.openExternal?.(data.html_url);
+
+      const assets = data.assets || [];
+      const isLinux = navigator.userAgent.includes('Linux');
+      const isWin = navigator.userAgent.includes('Windows');
+      const asset = assets.find(a =>
+        isLinux ? a.name.endsWith('.AppImage') :
+        isWin   ? a.name.endsWith('.exe') : false
+      );
+
+      checkUpdateBtn.addEventListener('click', async () => {
+        if (!asset) {
+          window.electronAPI?.openExternal?.(data.html_url);
+          return;
+        }
+
+        checkUpdateBtn.disabled = true;
+        checkUpdateBtn.textContent = 'Downloading... 0%';
+        updateStatus.textContent = 'Starting download…';
+        updateStatus.style.color = 'var(--muted)';
+
+        window.electronAPI?.onUpdateDownloadProgress?.((progress) => {
+          checkUpdateBtn.textContent = `Downloading... ${progress.percent}%`;
+          updateStatus.textContent = `${(progress.received / 1024 / 1024).toFixed(1)} MB / ${(progress.total / 1024 / 1024).toFixed(1)} MB`;
+        });
+
+        const result = await window.electronAPI?.downloadAndInstallUpdate?.({
+          url: asset.browser_download_url,
+          filename: asset.name
+        });
+
+        if (!result?.success) {
+          updateStatus.textContent = 'Download failed. Try again.';
+          updateStatus.style.color = 'rgba(239,68,68,0.85)';
+          checkUpdateBtn.textContent = 'Download & Install';
+          checkUpdateBtn.disabled = false;
+        }
       }, { once: true });
+
     } else {
       updateStatus.textContent = `You're up to date (v${currentVersion})`;
       updateStatus.style.color = 'var(--muted)';
