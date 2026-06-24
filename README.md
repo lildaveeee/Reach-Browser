@@ -177,5 +177,5 @@ Requirements: **Node.js 18+**, **npm**
 
 ## 📄 License
 
-MIT — see [LICENSE](LICENSE) for details.
+Mozilla — see [LICENSE](LICENSE) for details.
 
