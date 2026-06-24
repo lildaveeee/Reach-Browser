@@ -1,9 +1,6 @@
 <img width="1389" height="454" alt="image" src="https://github.com/user-attachments/assets/8c54c4e6-e888-4b65-98e2-bd907277e2c8" />
 
-
 <div align="center">
-
-<img src="buildResources/icon.png" width="100" height="100" alt="Reach Browser logo" />
 
 # Reach Browser
 
