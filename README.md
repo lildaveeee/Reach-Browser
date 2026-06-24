@@ -13,7 +13,7 @@
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-blue?style=flat-square)](https://github.com/lildaveeee/Reach-Browser/releases)
 [![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
 
-[Download](#-installation) · [Features](#-features) · [Customisation](#-customisation) · [Keyboard Shortcuts](#-keyboard-shortcuts)
+[Download](#-installation) · [Features](#-features) · [Customisation](#-customisation)
 
 </div>
 
