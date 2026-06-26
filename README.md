@@ -19,10 +19,9 @@
 ## ✨ Features
 
 ### 🗂️ Tabs
-- **Tear off tabs** into new windows by dragging outside the browser
-- **Move tabs between windows** by dragging onto another Reach Browser instance
-- **Split screen** — view two tabs side by side with a draggable divider
-- Toggle the tab bar visibility to go full-focus mode
+- **Split screen** view two tabs simultaneously side by side with a draggable divider
+- Hide the tab bar to allow for a focus mode removing all wasted space.
+- Moveable tab bar .
 
 ### 🔒 Privacy
 - **Built-in ad blocker** using EasyList + EasyPrivacy + uBlock filters — blocks 100,000+ domains
