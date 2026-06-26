@@ -8,7 +8,7 @@
 
 [![Version](https://img.shields.io/github/v/release/lildaveeee/Reach-Browser?style=flat-square&color=a855f7)](https://github.com/lildaveeee/Reach-Browser/releases/latest)
 [![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Windows-blue?style=flat-square)](https://github.com/lildaveeee/Reach-Browser/releases)
-[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/license-MPL--2.0-green?style=flat-square)](LICENSE)
 
 [Download](#-installation) · [Features](#-features) · [Customisation](#-customisation)
 
@@ -19,11 +19,8 @@
 ## ✨ Features
 
 ### 🗂️ Tabs
-- Fully featured tab bar with **drag-to-reorder** support
 - **Tear off tabs** into new windows by dragging outside the browser
 - **Move tabs between windows** by dragging onto another Reach Browser instance
-- Middle-click to close (configurable)
-- Reopen closed tabs with a shortcut
 - **Split screen** — view two tabs side by side with a draggable divider
 - Toggle the tab bar visibility to go full-focus mode
 
@@ -32,26 +29,17 @@
 - Granular **cookie control**: allow all, block third-party, block cross-site, or block all
 - Per-domain cookie **exceptions** — whitelist sites that need cookies (e.g. Google, YouTube)
 - Cookie viewer — browse, filter, and inspect every cookie by domain
-- One-click clear for cookies, storage, cache, passwords, and history
-- **Search engine choice**: Startpage, DuckDuckGo, Brave, Kagi, Google, Bing, Ecosia, and more
+- **Search engine choice**: Startpage, DuckDuckGo, Brave, Kagi, Ecosia, and more
 
 ### 🔑 Password Manager
 - Built-in encrypted **password vault** protected by a master password
 - AES-GCM 256-bit encryption with PBKDF2 key derivation
 - Auto-detects login forms and prompts to save credentials
 - Auto-fills saved credentials on matching sites
-- View, copy, and delete saved passwords from the vault
-
-### 📥 Downloads
-- Live download progress with speed and size tracking
-- Download history with file open and show-in-folder actions
-- Active download badge on the toolbar button
 
 ### 🌐 Navigation
-- Full browsing history with date grouping and per-entry deletion
 - Bang search support (`!g cats` → Google, works with any DuckDuckGo bang)
 - Picture-in-picture video popout button (auto-detects video on page)
-- Bookmarks panel with quick add and delete
 
 ---
 
@@ -177,5 +165,4 @@ Requirements: **Node.js 18+**, **npm**
 
 ## 📄 License
 
-Mozilla — see [LICENSE](LICENSE) for details.
-
+Mozilla Public License 2.0 — see [LICENSE](LICENSE) for details.
