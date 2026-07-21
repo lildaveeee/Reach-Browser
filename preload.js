@@ -60,6 +60,7 @@ const electronAPI = {
   reloadAdblockLists: ()        => ipcRenderer.invoke('reload-adblock-lists'),
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
+  relaunchApp: () => ipcRenderer.invoke('relaunch-app'),
 };
 
 contextBridge.exposeInMainWorld('electronAPI', electronAPI);
