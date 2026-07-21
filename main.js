@@ -5,6 +5,15 @@ const https = require('https');
 const http = require('http');
 const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 
+try {
+  const raw = fs.readFileSync(settingsPath, 'utf8');
+  const parsed = JSON.parse(raw);
+  if (parsed?.hardwareAcceleration === false) {
+    app.disableHardwareAcceleration();
+  }
+} catch (e) {
+}
+
 let mainWindow = null;
 let cookiePolicy = {
   enabled: true,
@@ -409,6 +418,11 @@ app.whenReady().then(async () => {
     return { success: true };
   });
 
+  ipcMain.handle('relaunch-app', () => {
+    app.relaunch();
+    app.exit(0);
+  });
+
   ipcMain.handle('set-adblock-enabled', (event, enabled) => {
     adBlockEnabled = !!enabled;
     return { success: true };
@@ -604,8 +618,6 @@ app.whenReady().then(async () => {
   ipcMain.handle('download-and-install-update', async (event, { url, filename }) => {
     const win = BrowserWindow.fromWebContents(event.sender);
 
-    // on Linux AppImage, process.execPath is the mounted read-only path
-    // APPIMAGE env var points to the actual .AppImage file on disk
     const actualPath = process.platform === 'linux'
       ? (process.env.APPIMAGE || process.execPath)
       : process.execPath;
