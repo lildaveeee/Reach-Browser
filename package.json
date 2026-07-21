@@ -1,6 +1,6 @@
 {
   "name": "reach-browser",
-  "version": "0.1.1",
+  "version": "0.1.6",
   "description": "A browser based on navigation, functionality and customisability.",
   "main": "main.js",
   "scripts": {
@@ -36,9 +36,5 @@
   "devDependencies": {
     "electron": "^26.6.10",
     "electron-builder": "^26.8.1"
-  },
-  "dependencies": {
-    "@cliqz/adblocker-electron": "^1.34.0",
-    "cross-fetch": "^4.1.0"
   }
 }
