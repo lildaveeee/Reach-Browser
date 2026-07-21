@@ -13,43 +13,43 @@
         <div class="tab-row">
           <div class="tab-strip" id="tab-strip"></div>
           <div class="tab-actions">
-            <button class="tab new-tab" id="new-tab-btn" title="New tab">
+            <button class="tab new-tab" id="new-tab-btn" data-i18n-title="newTab" title="New tab">
               <img src="./icons/plus.svg" alt="New tab" />
             </button>
-            <button id="close-app-btn" title="Close app">
+            <button id="close-app-btn" data-i18n-title="closeApp" title="Close app">
               <img src="./icons/close.svg" alt="Close app" />
             </button>
           </div>
         </div>
         <div class="navigation-bar">
           <div class="nav-controls">
-            <input id="address-bar" type="text" placeholder="Enter URL or search query" autocomplete="off" spellcheck="false" />
+            <input id="address-bar" type="text" data-i18n-placeholder="addressBarPlaceholder" placeholder="Enter URL or search query" autocomplete="off" spellcheck="false" />
             <div class="nav-btn-row">
-              <button id="nav-back" title="Back">
+              <button id="nav-back" data-i18n-title="navBack" title="Back">
                 <img src="./icons/caret-back.svg" alt="Back" />
               </button>
-              <button id="nav-forward" title="Forward">
+              <button id="nav-forward" data-i18n-title="navForward" title="Forward">
                 <img src="./icons/caret-forward.svg" alt="Forward" />
               </button>
-              <button id="nav-reload" title="Reload">
+              <button id="nav-reload" data-i18n-title="navReload" title="Reload">
                 <img src="./icons/refresh.svg" alt="Reload" class="reload-icon" />
               </button>
-              <button id="nav-home" title="Home">
+              <button id="nav-home" data-i18n-title="navHome" title="Home">
                 <img src="./icons/home.svg" alt="Home" />
               </button>
             </div>
             <div class="icon-btn-row">
-              <button id="bookmarks-btn" title="Bookmarks">
+              <button id="bookmarks-btn" data-i18n-title="bookmarks" title="Bookmarks">
                 <img src="./icons/bookmark.svg" alt="Bookmarks" />
               </button>
-              <button id="video-popout-btn" title="Pop Out" style="display:none;">
+              <button id="video-popout-btn" data-i18n-title="popOut" title="Pop Out" style="display:none;">
                 <img src="./icons/popout.svg" alt="Pop out" />
               </button>
-              <button id="downloads-btn" title="Downloads">
+              <button id="downloads-btn" data-i18n-title="downloads" title="Downloads">
                 <img src="./icons/download.svg" alt="Downloads" />
                 <span id="downloads-badge" class="downloads-badge" aria-hidden="true"></span>
               </button>
-              <button id="settings-btn" title="Settings">
+              <button id="settings-btn" data-i18n-title="settings" title="Settings">
                 <img src="./icons/hamburger.svg" alt="Settings" />
               </button>
             </div>
@@ -60,219 +60,298 @@
     </div>
     <div id="search-overlay" class="search-overlay" aria-hidden="true">
       <div class="search-dialog">
-        <input id="search-overlay-input" type="text" placeholder="Search or enter URL" autocomplete="off" spellcheck="false" />
+        <input id="search-overlay-input" type="text" data-i18n-placeholder="searchOrUrl" placeholder="Search or enter URL" autocomplete="off" spellcheck="false" />
       </div>
     </div>
     <div id="settings-modal" class="settings-modal" aria-hidden="true">
       <div class="settings-panel">
         <div class="settings-header">
           <div>
-            <h2>Reach Settings</h2>
+            <h2 data-i18n="settingsTitle">Reach Settings</h2>
           </div>
-          <button id="settings-close" class="settings-close" title="Close settings">
+          <button id="settings-close" class="settings-close" data-i18n-title="close" title="Close settings">
             <img src="./icons/close.svg" alt="Close" />
           </button>
         </div>
         <div class="settings-tabs" role="tablist">
-          <button class="settings-tab active" data-tab="general" role="tab">General</button>
-          <button class="settings-tab" data-tab="keybinds" role="tab">Keybinds</button>
-          <button class="settings-tab" data-tab="personalisation" role="tab">Personalisation</button>
-          <button class="settings-tab" data-tab="privacy" role="tab">Privacy</button>
-          <button class="settings-tab" data-tab="history" role="tab">History</button>
+          <button class="settings-tab active" data-tab="general" role="tab" data-i18n="tabGeneral">General</button>
+          <button class="settings-tab" data-tab="keybinds" role="tab" data-i18n="tabKeybinds">Keybinds</button>
+          <button class="settings-tab" data-tab="personalisation" role="tab" data-i18n="tabPersonalisation">Personalisation</button>
+          <button class="settings-tab" data-tab="privacy" role="tab" data-i18n="tabPrivacy">Privacy</button>
+          <button class="settings-tab" data-tab="history" role="tab" data-i18n="tabHistory">History</button>
         </div>
         <div class="settings-body">
+
+          <!--general-->
           <section class="settings-section active" data-section="general">
-            <h3>General</h3>
+            <h3 data-i18n="tabGeneral">General</h3>
             <div class="settings-control" style="margin-top:24px;">
+              <label for="startup-page-url" data-i18n="startupPageLabel">Custom startup page</label>
+              <input type="text" id="startup-page-url" data-i18n-placeholder="startupPagePlaceholder" placeholder="https://example.com" />
+              <div style="font-size:0.8rem;color:var(--muted);margin-top:2px;" data-i18n="startupPageHint">Opened when the app launches instead of your default search engine</div>
+            </div>
+            <div class="settings-control switch-control">
+              <label for="use-startup-page" data-i18n="useStartupPageLabel">Use startup page on launch</label>
+              <input type="checkbox" id="use-startup-page" />
+            </div>
+            <div class="settings-control switch-control">
+              <label for="restore-last-session" data-i18n="restoreLastSessionLabel">Restore last session on startup</label>
+              <input type="checkbox" id="restore-last-session" />
+            </div>
+            <div class="settings-control" style="margin-top:18px;">
+              <label for="new-tab-mode" data-i18n="newTabModeLabel">New tab opens as</label>
+              <select id="new-tab-mode">
+                <option value="search" data-i18n="newTabSearch">Default search engine</option>
+                <option value="startup" data-i18n="newTabStartup">Custom startup page</option>
+                <option value="blank" data-i18n="newTabBlank">Blank page</option>
+              </select>
+            </div>
+            <div class="settings-control" style="margin-top:18px;margin-bottom:18px;">
+              <label for="zoom-level" data-i18n="zoomLevelLabel">Interface zoom</label>
+              <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
+                <input type="range" id="zoom-level" min="50" max="175" step="5" value="100"
+                  style="flex:1;accent-color:var(--accent);" />
+                <span id="zoom-level-display"
+                  style="font-size:0.85rem;color:var(--settings-font-color);min-width:40px;text-align:right;font-weight:600;">100%</span>
+              </div>
+            </div>
+            <div class="settings-control switch-control" style="margin-top:24px;">
+              <label for="suspend-idle-tabs" data-i18n="suspendIdleLabel">Suspend idle tabs</label>
+              <input type="checkbox" id="suspend-idle-tabs" />
+            </div>
+            <div id="suspend-dep" class="settings-control hidden" style="margin-left:18px;">
+              <label for="suspend-after-minutes" data-i18n="suspendAfterLabel">Suspend after</label>
+              <select id="suspend-after-minutes">
+                <option value="1" data-i18n="minute1">1 minute</option>
+                <option value="2" data-i18n="minutes2">2 minutes</option>
+                <option value="5" data-i18n="minutes5">5 minutes</option>
+                <option value="15" data-i18n="minutes15">15 minutes</option>
+                <option value="30" data-i18n="minutes30">30 minutes</option>
+                <option value="60" data-i18n="hour1">1 hour</option>
+                <option value="120" data-i18n="hours2">2 hours</option>
+                <option value="240" data-i18n="hours4">4 hours</option>
+              </select>
+            </div>
+            <div class="settings-control switch-control" style="margin-top:24px;">
+              <label for="hardware-acceleration-toggle" data-i18n="hardwareAcceleration">Hardware acceleration</label>
+              <input type="checkbox" id="hardware-acceleration-toggle" />
+            </div>
+            <div id="hw-accel-restart-note" class="hidden" style="font-size:0.82rem;color:var(--accent);margin-top:-8px;padding-bottom:8px;">
+              <span data-i18n="restartRequired">Restart required to apply this change.</span>
+              <button id="hw-accel-restart-btn" class="settings-action" style="margin-left:8px;" data-i18n="restartNow">Restart now</button>
+            </div>
+            <div class="settings-control" style="margin-top:18px;">
+              <label for="language-select" data-i18n="language">Language</label>
+              <select id="language-select">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+              </select>
+            </div>
+            <div class="settings-control" style="padding: 2px 0 8px;">
+              <h3 data-i18n="updatesTitle">Updates</h3>
+              <button id="check-update-btn" class="settings-action" data-i18n="checkUpdates">Check for updates</button>
               <div id="update-status" style="font-size:0.82rem;color:var(--muted);padding:2px 0 8px;"></div>
-              <button id="check-update-btn" class="settings-action">Check for updates</button>
             </div>
             <h3 style="padding: 16px;"></h3>
-          </section>  
+          </section>
+
+          <!--keybinds-->
           <section class="settings-section" data-section="keybinds">
-            <h3>Keybinds</h3>
+            <h3 data-i18n="tabKeybinds">Keybinds</h3>
             <div class="settings-control">
-              <label for="tab-middle-click-action">Middle-click on tab:</label>
+              <label for="tab-middle-click-action" data-i18n="middleClickLabel">Middle-click on tab:</label>
               <select id="tab-middle-click-action">
-                <option value="close">Close tab</option>
-                <option value="none">No action</option>
+                <option value="close" data-i18n="middleClickClose">Close tab</option>
+                <option value="mute" data-i18n="middleClickMute">Mute/unmute tab</option>
+                <option value="refresh" data-i18n="middleClickRefresh">Refresh tab</option>
+                <option value="none" data-i18n="middleClickNone">No action</option>
               </select>
             </div>
             <div class="settings-control">
-              <label for="shortcut-open-search">Open search overlay</label>
+              <label for="shortcut-open-search" data-i18n="scOpenSearch">Open search overlay</label>
               <input id="shortcut-open-search" type="text" placeholder="Ctrl+Space" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-mute-tab">Mute tab shortcut</label>
+              <label for="shortcut-mute-tab" data-i18n="scMuteTab">Mute tab shortcut</label>
               <input id="shortcut-mute-tab" type="text" placeholder="Ctrl+M" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-refresh-tab">Refresh tab shortcut</label>
+              <label for="shortcut-refresh-tab" data-i18n="scRefreshTab">Refresh tab shortcut</label>
               <input id="shortcut-refresh-tab" type="text" placeholder="F5" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-find-in-page">Find in page</label>
+              <label for="shortcut-find-in-page" data-i18n="scFindInPage">Find in page</label>
               <input id="shortcut-find-in-page" type="text" placeholder="Control+F" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-undo-tab">Navigate back (undo)</label>
+              <label for="shortcut-undo-tab" data-i18n="scNavigateBack">Navigate back (undo)</label>
               <input id="shortcut-undo-tab" type="text" placeholder="Alt+ArrowLeft" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-redo-tab">Navigate forward (redo)</label>
+              <label for="shortcut-redo-tab" data-i18n="scNavigateForward">Navigate forward (redo)</label>
               <input id="shortcut-redo-tab" type="text" placeholder="Alt+ArrowRight" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-reopen-closed">Reopen closed tab</label>
+              <label for="shortcut-reopen-closed" data-i18n="scReopenClosed">Reopen closed tab</label>
               <input id="shortcut-reopen-closed" type="text" placeholder="Ctrl+Shift+T" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-switch-forward">Switch tab (forward)</label>
+              <label for="shortcut-switch-forward" data-i18n="scSwitchForward">Switch tab (forward)</label>
               <input id="shortcut-switch-forward" type="text" placeholder="Control+Tab" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-switch-back">Switch tab (back)</label>
+              <label for="shortcut-switch-back" data-i18n="scSwitchBack">Switch tab (back)</label>
               <input id="shortcut-switch-back" type="text" placeholder="Control+Shift+Tab" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-new-tab">New tab shortcut</label>
+              <label for="shortcut-new-tab" data-i18n="scNewTab">New tab shortcut</label>
               <input id="shortcut-new-tab" type="text" placeholder="Control+N" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-toggle-tabs">Toggle tab bar</label>
+              <label for="shortcut-toggle-tabs" data-i18n="scToggleTabs">Toggle tab bar</label>
               <input id="shortcut-toggle-tabs" type="text" placeholder="Control+B" />
             </div>
             <div class="settings-control">
-              <label for="shortcut-split-screen">Split current with next (side-by-side)</label>
+              <label for="shortcut-split-screen" data-i18n="scSplitScreen">Split current with next (side-by-side)</label>
               <input id="shortcut-split-screen" type="text" placeholder="Control+\\" />
             </div>
             <div class="settings-control">
-              <label>Website shortcuts</label>
+              <label data-i18n="websiteShortcuts">Website shortcuts</label>
               <div id="website-shortcuts"></div>
             </div>
             <h3 style="padding: 16px;"></h3>
           </section>
+
+          <!-- personalisation -->
           <section class="settings-section" data-section="personalisation">
-            <h3>Personalisation</h3>
+            <h3 data-i18n="tabPersonalisation">Personalisation</h3>
             <div class="settings-control">
-              <label for="theme-accent">Accent color</label>
+              <label for="theme-accent" data-i18n="themeAccent">Accent color</label>
               <input type="color" id="theme-accent" />
             </div>
             <div class="settings-control theme-gradient-dependent hidden">
-              <label for="theme-gradient-accent">Accent gradient color</label>
+              <label for="theme-gradient-accent" data-i18n="themeGradientAccent">Accent gradient color</label>
               <input type="color" id="theme-gradient-accent" />
             </div>
             <div class="settings-control">
-              <label for="theme-surface">Panel surface color</label>
+              <label for="theme-surface" data-i18n="themeSurface">Panel surface color</label>
               <input type="color" id="theme-surface" />
             </div>
             <div class="settings-control theme-gradient-dependent hidden">
-              <label for="theme-gradient-surface">Panel gradient color</label>
+              <label for="theme-gradient-surface" data-i18n="themeGradientSurface">Panel gradient color</label>
               <input type="color" id="theme-gradient-surface" />
             </div>
             <div class="settings-control">
-              <label for="theme-background">Background color</label>
+              <label for="theme-background" data-i18n="themeBackground">Background color</label>
               <input type="color" id="theme-background" />
             </div>
             <div class="settings-control">
-              <label for="theme-input">Input field color</label>
+              <label for="theme-input" data-i18n="themeInput">Input field color</label>
               <input type="color" id="theme-input" />
             </div>
             <div class="settings-control">
-              <label for="theme-border-color">Border color</label>
+              <label for="theme-border-color" data-i18n="themeBorderColor">Border color</label>
               <input type="color" id="theme-border-color" />
             </div>
             <div class="settings-control">
-              <label for="theme-border-width">Border width (px)</label>
+              <label for="theme-border-width" data-i18n="themeBorderWidth">Border width (px)</label>
               <input type="number" id="theme-border-width" min="0" max="8" step="1" />
             </div>
             <div class="settings-control">
-              <label for="theme-tab-active-bg">Selected tab color</label>
+              <label for="theme-tab-active-bg" data-i18n="themeTabActiveBg">Selected tab color</label>
               <input type="color" id="theme-tab-active-bg" />
             </div>
+            <div class="settings-control switch-control">
+              <label for="rounded-corners-toggle" data-i18n="roundedCorners">Rounded corners</label>
+              <input type="checkbox" id="rounded-corners-toggle" />
+            </div>
             <div class="settings-control theme-gradient-dependent hidden">
-              <label for="theme-gradient-tab-active">Selected tab gradient color</label>
+              <label for="theme-gradient-tab-active" data-i18n="themeGradientTabActive">Selected tab gradient color</label>
               <input type="color" id="theme-gradient-tab-active" />
             </div>
             <div class="settings-control">
-              <label for="theme-tab-inactive-bg">Inactive tab color</label>
+              <label for="theme-tab-inactive-bg" data-i18n="themeTabInactiveBg">Inactive tab color</label>
               <input type="color" id="theme-tab-inactive-bg" />
             </div>
             <div class="settings-control theme-gradient-dependent hidden">
-              <label for="theme-gradient-tab-inactive">Inactive tab gradient color</label>
+              <label for="theme-gradient-tab-inactive" data-i18n="themeGradientTabInactive">Inactive tab gradient color</label>
               <input type="color" id="theme-gradient-tab-inactive" />
             </div>
             <div class="settings-control">
-              <label for="theme-tab-active-text">Selected tab text</label>
+              <label for="theme-tab-active-text" data-i18n="themeTabActiveText">Selected tab text</label>
               <input type="color" id="theme-tab-active-text" />
             </div>
             <div class="settings-control">
-              <label for="theme-tab-inactive-text">Inactive tab text</label>
+              <label for="theme-tab-inactive-text" data-i18n="themeTabInactiveText">Inactive tab text</label>
               <input type="color" id="theme-tab-inactive-text" />
             </div>
             <div class="settings-control">
-              <label for="theme-settings-font-color">Settings font color</label>
+              <label for="theme-settings-font-color" data-i18n="themeSettingsFontColor">Settings font color</label>
               <input type="color" id="theme-settings-font-color" />
             </div>
             <div class="settings-control switch-control">
-              <label for="theme-gradient">Enable gradient</label>
+              <label for="theme-gradient" data-i18n="enableGradient">Enable gradient</label>
               <input type="checkbox" id="theme-gradient" />
             </div>
             <div class="settings-control">
-              <label for="theme-surface-pattern">Panel surface pattern</label>
+              <label for="theme-surface-pattern" data-i18n="surfacePattern">Panel surface pattern</label>
               <select id="theme-surface-pattern">
-                <option value="none">None (solid / gradient)</option>
-                <option value="blobs">Blurred blobs</option>
-                <option value="sharpblobs">Paint blobs</option>
-                <option value="dots">Polka dots</option>
-                <option value="grid">Fine grid</option>
-                <option value="noise">Paper noise</option>
-                <option value="stripes">Diagonal stripes</option>
-                <option value="topography">Topography lines</option>
-                <option value="hexagons">Semi-Circles</option>
+                <option value="none" data-i18n="patternNone">None (solid / gradient)</option>
+                <option value="blobs" data-i18n="patternBlobs">Blurred blobs</option>
+                <option value="sharpblobs" data-i18n="patternSharpBlobs">Paint blobs</option>
+                <option value="dots" data-i18n="patternDots">Polka dots</option>
+                <option value="grid" data-i18n="patternGrid">Fine grid</option>
+                <option value="noise" data-i18n="patternNoise">Paper noise</option>
+                <option value="stripes" data-i18n="patternStripes">Diagonal stripes</option>
+                <option value="topography" data-i18n="patternTopography">Topography lines</option>
+                <option value="hexagons" data-i18n="patternHexagons">Semi-Circles</option>
               </select>
             </div>
             <div id="surface-pattern-color-control" class="settings-control hidden">
-              <label for="theme-surface-pattern-color">Pattern tint color</label>
+              <label for="theme-surface-pattern-color" data-i18n="patternTintColor">Pattern tint color</label>
               <input type="color" id="theme-surface-pattern-color" value="#7c3aed" />
             </div>
             <div id="surface-pattern-opacity-control" class="settings-control hidden">
-              <label for="theme-surface-pattern-opacity">Pattern opacity (0–100)</label>
+              <label for="theme-surface-pattern-opacity" data-i18n="patternOpacity">Pattern opacity (0–100)</label>
               <input type="number" id="theme-surface-pattern-opacity" min="0" max="100" step="5" value="18" />
             </div>
             <div class="settings-control">
-              <label for="tab-position">Tab bar position</label>
+              <label for="tab-position" data-i18n="tabPosition">Tab bar position</label>
               <select id="tab-position">
-                <option value="top">Top</option>
-                <option value="bottom">Bottom</option>
-                <option value="left">Left</option>
-                <option value="right">Right</option>
+                <option value="top" data-i18n="posTop">Top</option>
+                <option value="bottom" data-i18n="posBottom">Bottom</option>
+                <option value="left" data-i18n="posLeft">Left</option>
+                <option value="right" data-i18n="posRight">Right</option>
               </select>
-            </div>            
+            </div>
             <div id="vertical-tab-width-control" class="settings-control">
               <label for="vertical-tab-width" class="range-label">
-                <span>Sidebar width</span>
+                <span data-i18n="sidebarWidth">Sidebar width</span>
                 <span class="range-value"><span id="vertical-tab-width-display">10</span>%</span>
               </label>
               <input type="range" id="vertical-tab-width" min="5" max="30" step="1" value="10">
             </div>
-            <h4>Saved themes</h4>
+            <h4 data-i18n="savedThemes">Saved themes</h4>
             <div class="settings-control">
               <div class="theme-actions-row">
-                <button id="save-theme-btn" class="settings-action">Save current theme</button>
+                <button id="save-theme-btn" class="settings-action" data-i18n="saveCurrentTheme">Save current theme</button>
                 <div id="randomise-theme-btn" class="settings-action randomise-slider-btn" title="Drag to set brightness · click to randomise" style="cursor:pointer;overflow:hidden;position:relative;padding:0;">
                   <div id="randomise-slider-fill" style="position:absolute;top:0;left:0;height:100%;width:50%;pointer-events:none;border-radius:inherit;"></div>
-                  <span id="randomise-slider-label" style="position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 12px;font-size:0.88rem;">Randomise</span>
+                  <span id="randomise-slider-label" style="position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:6px;height:100%;padding:0 12px;font-size:0.88rem;" data-i18n="randomise">Randomise</span>
                 </div>
               </div>
             </div>
             <div id="theme-presets-list" class="theme-presets-list"></div>
             <h3 style="padding: 16px;"></h3>
           </section>
+
+          <!-- privacy-->
           <section class="settings-section" data-section="privacy">
-            <h3>Privacy</h3>
+            <h3 data-i18n="tabPrivacy">Privacy</h3>
             <div class="settings-control">
-              <label for="search-engine-select">Default search engine</label>
+              <label for="search-engine-select" data-i18n="searchEngineLabel">Default search engine</label>
               <select id="search-engine-select">
                 <option value="startpage">Startpage</option>
                 <option value="duckduckgo">DuckDuckGo</option>
@@ -290,129 +369,137 @@
               </select>
             </div>
             <div class="settings-control switch-control">
-              <label for="cookie-enabled">Enable cookies</label>
+              <label for="cookie-enabled" data-i18n="enableCookies">Enable cookies</label>
               <input type="checkbox" id="cookie-enabled" />
             </div>
             <div class="settings-control">
-              <label for="cookie-level">Cookie level</label>
+              <label for="cookie-level" data-i18n="cookieLevelLabel">Cookie level</label>
               <select id="cookie-level">
-                <option value="allowAll">Allow all cookies</option>
-                <option value="blockThirdParty">Block third-party cookies</option>
-                <option value="blockCrossSite">Block cross-site cookies (strict)</option>
-                <option value="blockAll">Block all cookies</option>
+                <option value="allowAll" data-i18n="cookieAllowAll">Allow all cookies</option>
+                <option value="blockThirdParty" data-i18n="cookieBlockThird">Block third-party cookies</option>
+                <option value="blockCrossSite" data-i18n="cookieBlockCross">Block cross-site cookies (strict)</option>
+                <option value="blockAll" data-i18n="cookieBlockAll">Block all cookies</option>
               </select>
             </div>
             <div class="settings-control">
-              <label>Cookie exceptions</label>
+              <label data-i18n="cookieExceptions">Cookie exceptions</label>
               <div id="cookie-exceptions">
                 <div class="cookie-exception-row">
                   <input type="text" placeholder="example.com" />
                   <select>
-                    <option value="allow">Allow</option>
-                    <option value="block">Block</option>
+                    <option value="allow" data-i18n="allow">Allow</option>
+                    <option value="block" data-i18n="block">Block</option>
                   </select>
                 </div>
                 <div class="cookie-exception-row">
                   <input type="text" placeholder="example.com" />
                   <select>
-                    <option value="allow">Allow</option>
-                    <option value="block">Block</option>
+                    <option value="allow" data-i18n="allow">Allow</option>
+                    <option value="block" data-i18n="block">Block</option>
                   </select>
                 </div>
               </div>
             </div>
             <div class="settings-control switch-control" style="margin-top:24px;">
-              <label for="adblock-enabled" style="font-weight:600;">Enable ad blocker</label>
+              <label for="adblock-enabled" style="font-weight:600;" data-i18n="enableAdBlock">Enable ad blocker</label>
               <input type="checkbox" id="adblock-enabled" />
             </div>
             <div class="settings-control" style="margin-top:4px;">
               <div id="adblock-status" style="font-size:0.82rem;color:var(--muted);padding:2px 0;"></div>
-              <button id="adblock-reload-btn" class="settings-action" style="margin-top:8px;">Reload block lists</button>
+              <button id="adblock-reload-btn" class="settings-action" style="margin-top:8px;" data-i18n="reloadBlockLists">Reload block lists</button>
             </div>
             <div class="settings-control" style="margin-top:12px;">
-              <button id="open-vault-btn" class="settings-action">View saved passwords</button>
+              <button id="open-vault-btn" class="settings-action" data-i18n="viewSavedPasswords">View saved passwords</button>
             </div>
             <div class="settings-control buttons-grid">
-              <button id="clear-cookies-btn" class="settings-action">Clear cookies</button>
-              <button id="view-cookies-btn" class="settings-action">View cookies</button>
-              <button id="clear-storage-btn" class="settings-action">Clear site storage</button>
-              <button id="clear-all-btn" class="settings-action">Clear all data</button>
-              <button id="clear-passwords-btn" class="settings-action">Clear saved passwords</button>
-              <button id="clear-downloads-history-btn" class="settings-action">Clear download history</button>
-              <button id="clear-history-btn" class="settings-action">Clear browsing history</button>
+              <button id="clear-cookies-btn" class="settings-action" data-i18n="clearCookies">Clear cookies</button>
+              <button id="view-cookies-btn" class="settings-action" data-i18n="viewCookies">View cookies</button>
+              <button id="clear-storage-btn" class="settings-action" data-i18n="clearStorage">Clear site storage</button>
+              <button id="clear-all-btn" class="settings-action" data-i18n="clearAll">Clear all data</button>
+              <button id="clear-passwords-btn" class="settings-action" data-i18n="clearPasswords">Clear saved passwords</button>
+              <button id="clear-downloads-history-btn" class="settings-action" data-i18n="clearDownloadHistory">Clear download history</button>
+              <button id="clear-history-btn" class="settings-action" data-i18n="clearBrowsingHistory">Clear browsing history</button>
             </div>
             <div id="privacy-status" class="privacy-status"></div>
             <h3 style="padding: 16px;"></h3>
           </section>
+
+          <!-- history -->
           <section class="settings-section" data-section="history">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-              <h3 style="margin:0;">Browsing history</h3>
+              <h3 style="margin:0;" data-i18n="browsingHistory">Browsing history</h3>
             </div>
             <div
               id="history-list-container"
               style="height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(124,58,237,0.25) transparent;padding-right:4px;"
             ></div>
             <h3 style="padding: 16px;"></h3>
-          </section>       
+          </section>
         </div>
       </div>
     </div>
+
+    <!-- cred save -->
     <div id="credential-save-modal" class="cred-toast-overlay" aria-hidden="true">
       <div class="cred-toast">
         <div class="cred-toast-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2a5 5 0 0 1 5 5v3H7V7a5 5 0 0 1 5-5z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="3" y="10" width="18" height="12" rx="3" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/></svg>
         </div>
         <div class="cred-toast-body">
-          <div class="cred-toast-title">Save password?</div>
+          <div class="cred-toast-title" data-i18n="savePassword">Save password?</div>
           <div id="credential-save-text" class="cred-toast-sub"></div>
         </div>
         <div class="cred-toast-actions">
-          <button id="credential-save-confirm" class="cred-toast-btn cred-toast-btn--save">Save</button>
+          <button id="credential-save-confirm" class="cred-toast-btn cred-toast-btn--save" data-i18n="save">Save</button>
           <button id="credential-save-dismiss" class="cred-toast-btn cred-toast-btn--dismiss">✕</button>
         </div>
       </div>
     </div>
+
+    <!-- master password -->
     <div id="master-password-modal" class="settings-modal" aria-hidden="true">
       <div class="settings-panel" style="width:min(380px,calc(100vw - 32px));max-height:unset;">
         <div class="settings-header">
           <div>
-            <h2>Set master password</h2>
-            <p style="margin:0;font-size:0.85rem;color:var(--muted);">Required to save or view passwords</p>
+            <h2 data-i18n="masterPasswordTitle">Set master password</h2>
+            <p style="margin:0;font-size:0.85rem;color:var(--muted);" data-i18n="masterPasswordSub">Required to save or view passwords</p>
           </div>
         </div>
         <div class="settings-body" style="height:auto;gap:12px;display:flex;flex-direction:column;padding:20px 28px 24px;">
           <div class="settings-control" style="margin-top:0;">
-            <label for="master-pw-input">Master password</label>
-            <input type="password" id="master-pw-input" placeholder="Enter a strong password" />
+            <label for="master-pw-input" data-i18n="masterPasswordInput">Master password</label>
+            <input type="password" id="master-pw-input" data-i18n-placeholder="masterPasswordEnter" placeholder="Enter a strong password" />
           </div>
           <div class="settings-control" style="margin-top:0;">
-            <label for="master-pw-confirm">Confirm password</label>
-            <input type="password" id="master-pw-confirm" placeholder="Repeat password" />
+            <label for="master-pw-confirm" data-i18n="masterPasswordConfirm">Confirm password</label>
+            <input type="password" id="master-pw-confirm" data-i18n-placeholder="masterPasswordRepeat" placeholder="Repeat password" />
           </div>
           <div id="master-pw-error" style="color:rgba(239,68,68,0.9);font-size:0.82rem;min-height:18px;"></div>
-          <button id="master-pw-set-btn" class="settings-action" style="margin-top:4px;">Set master password</button>
+          <button id="master-pw-set-btn" class="settings-action" data-i18n="setMasterPassword">Set master password</button>
         </div>
       </div>
     </div>
+
+    <!-- vault -->
     <div id="vault-modal" class="settings-modal" aria-hidden="true">
       <div class="settings-panel" style="width:min(480px,calc(100vw - 32px));max-height:80vh;">
         <div class="settings-header">
           <div>
-            <h2>Saved passwords</h2>
-            <p style="margin:0;font-size:0.85rem;color:var(--muted);">Enter master password to view</p>
+            <h2 data-i18n="vaultTitle">Saved passwords</h2>
+            <p style="margin:0;font-size:0.85rem;color:var(--muted);" data-i18n="vaultSub">Enter master password to view</p>
           </div>
-          <button id="vault-modal-close" class="settings-close" title="Close">
+          <button id="vault-modal-close" class="settings-close" data-i18n-title="close" title="Close">
             <img src="./icons/close.svg" alt="Close" />
           </button>
         </div>
         <div class="settings-body" style="height:auto;max-height:60vh;display:flex;flex-direction:column;gap:12px;padding:20px 28px 24px;">
           <div id="vault-locked" style="display:flex;flex-direction:column;gap:12px;">
             <div class="settings-control" style="margin-top:0;">
-              <label for="vault-unlock-input">Master password</label>
-              <input type="password" id="vault-unlock-input" placeholder="Enter master password" />
+              <label for="vault-unlock-input" data-i18n="masterPasswordInput">Master password</label>
+              <input type="password" id="vault-unlock-input" data-i18n-placeholder="masterPasswordEnter" placeholder="Enter master password" />
             </div>
             <div id="vault-unlock-error" style="color:rgba(239,68,68,0.9);font-size:0.82rem;min-height:18px;"></div>
-            <button id="vault-unlock-btn" class="settings-action">Unlock vault</button>
+            <button id="vault-unlock-btn" class="settings-action" data-i18n="unlockVault">Unlock vault</button>
           </div>
           <div id="vault-unlocked" style="display:none;flex-direction:column;gap:8px;overflow-y:auto;">
             <div id="vault-list"></div>
@@ -420,25 +507,27 @@
         </div>
       </div>
     </div>
+
+    <!-- dwnload modal -->
     <div id="downloads-modal" class="settings-modal" aria-hidden="true">
       <div class="settings-panel downloads-panel">
         <div class="settings-header">
           <div>
-            <h2>Downloads</h2>
+            <h2 data-i18n="downloadsTitle">Downloads</h2>
             <p id="downloads-header-summary" class="downloads-summary-text"></p>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <button id="downloads-clear-completed-btn" class="settings-action downloads-header-action" title="Clear completed">Clear completed</button>
-            <button id="downloads-modal-close" class="settings-close" title="Close downloads">
+            <button id="downloads-clear-completed-btn" class="settings-action downloads-header-action" data-i18n="clearCompleted" data-i18n-title="clearCompleted" title="Clear completed">Clear completed</button>
+            <button id="downloads-modal-close" class="settings-close" data-i18n-title="close" title="Close downloads">
               <img src="./icons/close.svg" alt="Close" />
             </button>
           </div>
         </div>
         <div class="downloads-filter-bar">
-          <button class="dl-filter-btn active" data-filter="all">All</button>
-          <button class="dl-filter-btn" data-filter="active">Active</button>
-          <button class="dl-filter-btn" data-filter="completed">Completed</button>
-          <button class="dl-filter-btn" data-filter="failed">Failed</button>
+          <button class="dl-filter-btn active" data-filter="all" data-i18n="filterAll">All</button>
+          <button class="dl-filter-btn" data-filter="active" data-i18n="filterActive">Active</button>
+          <button class="dl-filter-btn" data-filter="completed" data-i18n="filterCompleted">Completed</button>
+          <button class="dl-filter-btn" data-filter="failed" data-i18n="filterFailed">Failed</button>
         </div>
         <div class="settings-body downloads-body" id="downloads-list-container">
           <div class="downloads-empty" id="downloads-empty-state">
@@ -446,68 +535,77 @@
               <path d="M12 16L7 11h4V4h2v7h4l-5 5z" fill="currentColor" opacity="0.4"/>
               <path d="M20 18H4v2h16v-2z" fill="currentColor" opacity="0.4"/>
             </svg>
-            <p>No downloads yet</p>
+            <p data-i18n="noDownloads">No downloads yet</p>
           </div>
           <div id="downloads-list"></div>
         </div>
       </div>
     </div>
+
+    <!-- find bar / search bar -->
     <div id="find-bar" class="find-bar" role="search" aria-label="Find in page">
       <input
         id="find-input"
         type="text"
+        data-i18n-placeholder="findPlaceholder"
         placeholder="Find in page…"
         autocomplete="off"
         spellcheck="false"
         aria-label="Search text"
       />
       <span id="find-count" class="find-count"></span>
-      <button id="find-prev-btn" class="find-btn" title="Previous match (Shift+Enter)">
+      <button id="find-prev-btn" class="find-btn" data-i18n-title="findPrev" title="Previous match (Shift+Enter)">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M18 15l-6-6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button id="find-next-btn" class="find-btn" title="Next match (Enter)">
+      <button id="find-next-btn" class="find-btn" data-i18n-title="findNext" title="Next match (Enter)">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
-      <button id="find-close-btn" class="find-btn find-btn--close" title="Close (Escape)">
+      <button id="find-close-btn" class="find-btn find-btn--close" data-i18n-title="close" title="Close (Escape)">
         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
       </button>
     </div>
+
+    <!-- bookmarks -->
     <div id="bookmarks-modal" class="bookmarks-modal" aria-hidden="true">
       <div id="bookmarks-dropdown" class="bookmarks-dropdown"></div>
     </div>
+
+    <!-- cookies -->
     <div id="cookies-modal" class="settings-modal" aria-hidden="true">
       <div class="settings-panel" style="width:min(700px,calc(100vw - 32px));max-height:85vh;">
         <div class="settings-header">
           <div>
-            <h2>Cookies</h2>
-            <p id="cookies-header-summary" style="margin:0;font-size:0.88rem;color:var(--muted);">Loading…</p>
+            <h2 data-i18n="cookiesTitle">Cookies</h2>
+            <p id="cookies-header-summary" style="margin:0;font-size:0.88rem;color:var(--muted);" data-i18n="loading">Loading…</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center;">
-            <input id="cookies-search" type="text" placeholder="Filter by domain or name…"
+            <input id="cookies-search" type="text" data-i18n-placeholder="cookiesFilter" placeholder="Filter by domain or name…"
               style="height:36px;padding:0 12px;border-radius:10px;border:var(--border-width) solid var(--border-color);background:var(--input-bg);color:var(--text);font-size:0.85rem;outline:none;width:220px;" />
-            <button id="cookies-modal-close" class="settings-close" title="Close">
+            <button id="cookies-modal-close" class="settings-close" data-i18n-title="close" title="Close">
               <img src="./icons/close.svg" alt="Close" />
             </button>
           </div>
         </div>
         <div style="padding:0 28px 0;background:var(--panel);border-bottom:var(--border-width) solid var(--border-color);display:flex;gap:6px;">
-          <button class="dl-filter-btn active" data-cookie-filter="all">All</button>
-          <button class="dl-filter-btn" data-cookie-filter="session">Session</button>
-          <button class="dl-filter-btn" data-cookie-filter="persistent">Persistent</button>
-          <button class="dl-filter-btn" data-cookie-filter="secure">Secure</button>
-          <button class="dl-filter-btn" data-cookie-filter="httponly">HttpOnly</button>
+          <button class="dl-filter-btn active" data-cookie-filter="all" data-i18n="filterAll">All</button>
+          <button class="dl-filter-btn" data-cookie-filter="session" data-i18n="filterSession">Session</button>
+          <button class="dl-filter-btn" data-cookie-filter="persistent" data-i18n="filterPersistent">Persistent</button>
+          <button class="dl-filter-btn" data-cookie-filter="secure" data-i18n="filterSecure">Secure</button>
+          <button class="dl-filter-btn" data-cookie-filter="httponly" data-i18n="filterHttpOnly">HttpOnly</button>
         </div>
         <div class="settings-body" style="padding:0;overflow:hidden;display:flex;flex-direction:column;height:65vh;">
           <div id="cookies-list" style="flex:1;overflow-y:auto;padding:12px 20px;"></div>
         </div>
       </div>
     </div>
+    <div id="zoom-toast"></div>
+    <script src="i18n.js"></script>
     <script src="renderer.js"></script>
   </body>
 </html>
