@@ -1,0 +1,834 @@
+// i18n.js
+
+const TRANSLATIONS = {
+  en: {
+    // Settings
+    settingsTitle: "Reach Settings",
+    tabGeneral: "General",
+    tabKeybinds: "Keybinds",
+    tabPersonalisation: "Personalisation",
+    tabPrivacy: "Privacy",
+    tabHistory: "History",
+
+    // General
+    restoreLastSessionLabel: "Restore last session on startup",
+    startupPageLabel: "Custom startup page",
+    startupPagePlaceholder: "https://example.com",
+    startupPageHint: "Opened when the app launches instead of your default search engine",
+    useStartupPageLabel: "Use startup page on launch",
+    newTabModeLabel: "New tab opens as",
+    newTabSearch: "Default search engine",
+    newTabStartup: "Custom startup page",
+    newTabBlank: "Blank page",
+    zoomLevelLabel: "Zoom",
+    suspendIdleLabel: "Suspend idle tabs",
+    suspendAfterLabel: "Suspend after",
+
+    minute1: "1 minute",
+    minutes2: "2 minutes",
+    minutes5: "5 minutes",
+    minutes15: "15 minutes",
+    minutes30: "30 minutes",
+    hour1: "1 hour",
+    hours2: "2 hours",
+    hours4: "4 hours",
+
+    hardwareAcceleration: "Hardware acceleration",
+    restartRequired: "Restart required to apply this change.",
+    restartNow: "Restart now",
+
+    updatesTitle: "Updates",
+    checkUpdates: "Check for updates",
+
+    language: "Language",
+
+    // Search
+    addressBarPlaceholder: "Enter URL or search query",
+    searchOrUrl: "Search or enter URL",
+
+    // Navigation
+    navBack: "Back",
+    navForward: "Forward",
+    navReload: "Reload",
+    navHome: "Home",
+
+    // Toolbar
+    bookmarks: "Bookmarks",
+    downloads: "Downloads",
+    settings: "Settings",
+    popOut: "Pop out",
+    newTab: "New tab",
+    closeApp: "Close app",
+    close: "Close",
+
+    // Keybinds
+    middleClickLabel: "Middle-click on tab:",
+    middleClickClose: "Close tab",
+    middleClickMute: "Mute/unmute tab",
+    middleClickRefresh: "Refresh tab",
+    middleClickNone: "No action",
+
+    scOpenSearch: "Open search overlay",
+    scMuteTab: "Mute tab shortcut",
+    scRefreshTab: "Refresh tab shortcut",
+    scFindInPage: "Find in page",
+    scNavigateBack: "Navigate back (undo)",
+    scNavigateForward: "Navigate forward (redo)",
+    scReopenClosed: "Reopen closed tab",
+    scSwitchForward: "Switch tab (forward)",
+    scSwitchBack: "Switch tab (back)",
+    scNewTab: "New tab shortcut",
+    scToggleTabs: "Toggle tab bar",
+    scSplitScreen: "Split current with next (side-by-side)",
+    websiteShortcuts: "Website shortcuts",
+
+    // Theme
+    themeAccent: "Accent color",
+    themeGradientAccent: "Accent gradient color",
+    themeSurface: "Panel surface color",
+    themeGradientSurface: "Panel gradient color",
+    themeBackground: "Background color",
+    themeInput: "Input field color",
+    themeBorderColor: "Border color",
+    themeBorderWidth: "Border width (px)",
+    themeTabActiveBg: "Selected tab color",
+    themeGradientTabActive: "Selected tab gradient color",
+    themeTabInactiveBg: "Inactive tab color",
+    themeGradientTabInactive: "Inactive tab gradient color",
+    themeTabActiveText: "Selected tab text",
+    themeTabInactiveText: "Inactive tab text",
+    themeSettingsFontColor: "Settings font color",
+
+    roundedCorners: "Rounded corners",
+    enableGradient: "Enable gradient",
+
+    surfacePattern: "Panel surface pattern",
+    patternNone: "None (solid / gradient)",
+    patternBlobs: "Blurred blobs",
+    patternSharpBlobs: "Paint blobs",
+    patternDots: "Polka dots",
+    patternGrid: "Fine grid",
+    patternNoise: "Paper noise",
+    patternStripes: "Diagonal stripes",
+    patternTopography: "Topography lines",
+    patternHexagons: "Semi-Circles",
+
+    patternTintColor: "Pattern tint color",
+    patternOpacity: "Pattern opacity (0–100)",
+
+    tabPosition: "Tab bar position",
+    posTop: "Top",
+    posBottom: "Bottom",
+    posLeft: "Left",
+    posRight: "Right",
+
+    sidebarWidth: "Sidebar width",
+
+    savedThemes: "Saved themes",
+    saveCurrentTheme: "Save current theme",
+    randomise: "Randomise",
+
+    // Privacy
+    searchEngineLabel: "Default search engine",
+
+    enableCookies: "Enable cookies",
+    cookieLevelLabel: "Cookie level",
+    cookieAllowAll: "Allow all cookies",
+    cookieBlockThird: "Block third-party cookies",
+    cookieBlockCross: "Block cross-site cookies (strict)",
+    cookieBlockAll: "Block all cookies",
+
+    cookieExceptions: "Cookie exceptions",
+
+    allow: "Allow",
+    block: "Block",
+
+    enableAdBlock: "Enable ad blocker",
+    reloadBlockLists: "Reload block lists",
+
+    viewSavedPasswords: "View saved passwords",
+
+    clearCookies: "Clear cookies",
+    viewCookies: "View cookies",
+    clearStorage: "Clear site storage",
+    clearAll: "Clear all data",
+    clearPasswords: "Clear saved passwords",
+    clearDownloadHistory: "Clear download history",
+    clearBrowsingHistory: "Clear browsing history",
+
+    // History
+    browsingHistory: "Browsing history",
+
+    // Passwords
+    savePassword: "Save password?",
+    save: "Save",
+
+    masterPasswordTitle: "Set master password",
+    masterPasswordSub: "Required to save or view passwords",
+    masterPasswordInput: "Master password",
+    masterPasswordEnter: "Enter a strong password",
+    masterPasswordConfirm: "Confirm password",
+    masterPasswordRepeat: "Repeat password",
+    setMasterPassword: "Set master password",
+
+    vaultTitle: "Saved passwords",
+    vaultSub: "Enter master password to view",
+    unlockVault: "Unlock vault",
+
+    // Downloads
+    downloadsTitle: "Downloads",
+    clearCompleted: "Clear completed",
+
+    filterAll: "All",
+    filterActive: "Active",
+    filterCompleted: "Completed",
+    filterFailed: "Failed",
+
+    noDownloads: "No downloads yet",
+
+    // Find
+    findPlaceholder: "Find in page…",
+    findPrev: "Previous match",
+    findNext: "Next match",
+
+    // Cookies
+    cookiesTitle: "Cookies",
+    cookiesFilter: "Filter by domain or name…",
+    filterSession: "Session",
+    filterPersistent: "Persistent",
+    filterSecure: "Secure",
+    filterHttpOnly: "HttpOnly",
+
+    // Misc
+    loading: "Loading…",
+  },
+
+  es: {
+    // Settings
+    settingsTitle: "Configuración de Reach",
+    tabGeneral: "General",
+    tabKeybinds: "Atajos",
+    tabPersonalisation: "Personalización",
+    tabPrivacy: "Privacidad",
+    tabHistory: "Historial",
+
+    // General
+    restoreLastSessionLabel: "Restaurar la última sesión al iniciar",
+    startupPageLabel: "Página de inicio personalizada",
+    startupPagePlaceholder: "https://ejemplo.com",
+    startupPageHint: "Se abre al iniciar la aplicación en lugar de tu motor de búsqueda predeterminado",
+    useStartupPageLabel: "Usar página de inicio al abrir",
+    newTabModeLabel: "La nueva pestaña se abre como",
+    newTabSearch: "Motor de búsqueda predeterminado",
+    newTabStartup: "Página de inicio personalizada",
+    newTabBlank: "Página en blanco",
+    zoomLevelLabel: "Zoom",
+    suspendIdleLabel: "Suspender pestañas inactivas",
+    suspendAfterLabel: "Suspender después de",
+
+    minute1: "1 minuto",
+    minutes2: "2 minutos",
+    minutes5: "5 minutos",
+    minutes15: "15 minutos",
+    minutes30: "30 minutos",
+    hour1: "1 hora",
+    hours2: "2 horas",
+    hours4: "4 horas",
+
+    hardwareAcceleration: "Aceleración por hardware",
+    restartRequired: "Se requiere reiniciar para aplicar este cambio.",
+    restartNow: "Reiniciar ahora",
+
+    updatesTitle: "Actualizaciones",
+    checkUpdates: "Buscar actualizaciones",
+
+    language: "Idioma",
+
+    // Search
+    addressBarPlaceholder: "Introduce una URL o búsqueda",
+    searchOrUrl: "Buscar o introducir URL",
+
+    // Navigation
+    navBack: "Atrás",
+    navForward: "Adelante",
+    navReload: "Recargar",
+    navHome: "Inicio",
+
+    // Toolbar
+    bookmarks: "Marcadores",
+    downloads: "Descargas",
+    settings: "Configuración",
+    popOut: "Separar",
+    newTab: "Nueva pestaña",
+    closeApp: "Cerrar aplicación",
+    close: "Cerrar",
+
+    // Keybinds
+    middleClickLabel: "Clic central en la pestaña:",
+    middleClickClose: "Cerrar pestaña",
+    middleClickMute: "Silenciar/activar sonido de pestaña",
+    middleClickRefresh: "Actualizar pestaña",
+    middleClickNone: "Sin acción",
+
+    scOpenSearch: "Abrir superposición de búsqueda",
+    scMuteTab: "Atajo para silenciar pestaña",
+    scRefreshTab: "Atajo para actualizar pestaña",
+    scFindInPage: "Buscar en la página",
+    scNavigateBack: "Navegar atrás (deshacer)",
+    scNavigateForward: "Navegar adelante (rehacer)",
+    scReopenClosed: "Reabrir pestaña cerrada",
+    scSwitchForward: "Cambiar pestaña (siguiente)",
+    scSwitchBack: "Cambiar pestaña (anterior)",
+    scNewTab: "Atajo para nueva pestaña",
+    scToggleTabs: "Mostrar/ocultar barra de pestañas",
+    scSplitScreen: "Dividir actual con siguiente (lado a lado)",
+    websiteShortcuts: "Atajos de sitios web",
+
+    // Theme
+    themeAccent: "Color de acento",
+    themeGradientAccent: "Color de degradado de acento",
+    themeSurface: "Color de superficie del panel",
+    themeGradientSurface: "Color de degradado del panel",
+    themeBackground: "Color de fondo",
+    themeInput: "Color del campo de entrada",
+    themeBorderColor: "Color del borde",
+    themeBorderWidth: "Ancho del borde (px)",
+    themeTabActiveBg: "Color de pestaña seleccionada",
+    themeGradientTabActive: "Degradado de pestaña seleccionada",
+    themeTabInactiveBg: "Color de pestaña inactiva",
+    themeGradientTabInactive: "Degradado de pestaña inactiva",
+    themeTabActiveText: "Texto de pestaña seleccionada",
+    themeTabInactiveText: "Texto de pestaña inactiva",
+    themeSettingsFontColor: "Color de fuente de configuración",
+
+    roundedCorners: "Esquinas redondeadas",
+    enableGradient: "Activar degradado",
+
+    surfacePattern: "Patrón de superficie del panel",
+    patternNone: "Ninguno (sólido / degradado)",
+    patternBlobs: "Manchas difuminadas",
+    patternSharpBlobs: "Manchas de pintura",
+    patternDots: "Puntos",
+    patternGrid: "Rejilla fina",
+    patternNoise: "Ruido de papel",
+    patternStripes: "Rayas diagonales",
+    patternTopography: "Líneas topográficas",
+    patternHexagons: "Semicírculos",
+
+    patternTintColor: "Color del patrón",
+    patternOpacity: "Opacidad del patrón (0–100)",
+
+    tabPosition: "Posición de la barra de pestañas",
+    posTop: "Arriba",
+    posBottom: "Abajo",
+    posLeft: "Izquierda",
+    posRight: "Derecha",
+
+    sidebarWidth: "Ancho de la barra lateral",
+
+    savedThemes: "Temas guardados",
+    saveCurrentTheme: "Guardar tema actual",
+    randomise: "Aleatorizar",
+
+    // Privacy
+    searchEngineLabel: "Motor de búsqueda predeterminado",
+
+    enableCookies: "Activar cookies",
+    cookieLevelLabel: "Nivel de cookies",
+    cookieAllowAll: "Permitir todas las cookies",
+    cookieBlockThird: "Bloquear cookies de terceros",
+    cookieBlockCross: "Bloquear cookies entre sitios (estricto)",
+    cookieBlockAll: "Bloquear todas las cookies",
+
+    cookieExceptions: "Excepciones de cookies",
+
+    allow: "Permitir",
+    block: "Bloquear",
+
+    enableAdBlock: "Activar bloqueador de anuncios",
+    reloadBlockLists: "Recargar listas de bloqueo",
+
+    viewSavedPasswords: "Ver contraseñas guardadas",
+
+    clearCookies: "Borrar cookies",
+    viewCookies: "Ver cookies",
+    clearStorage: "Borrar almacenamiento del sitio",
+    clearAll: "Borrar todos los datos",
+    clearPasswords: "Borrar contraseñas guardadas",
+    clearDownloadHistory: "Borrar historial de descargas",
+    clearBrowsingHistory: "Borrar historial de navegación",
+
+    // History
+    browsingHistory: "Historial de navegación",
+
+    // Passwords
+    savePassword: "¿Guardar contraseña?",
+    save: "Guardar",
+
+    masterPasswordTitle: "Establecer contraseña maestra",
+    masterPasswordSub: "Necesaria para guardar o ver contraseñas",
+    masterPasswordInput: "Contraseña maestra",
+    masterPasswordEnter: "Introduce una contraseña segura",
+    masterPasswordConfirm: "Confirmar contraseña",
+    masterPasswordRepeat: "Repetir contraseña",
+    setMasterPassword: "Establecer contraseña maestra",
+
+    vaultTitle: "Contraseñas guardadas",
+    vaultSub: "Introduce la contraseña maestra para verlas",
+    unlockVault: "Desbloquear bóveda",
+
+    // Downloads
+    downloadsTitle: "Descargas",
+    clearCompleted: "Limpiar completadas",
+
+    filterAll: "Todas",
+    filterActive: "Activas",
+    filterCompleted: "Completadas",
+    filterFailed: "Fallidas",
+
+    noDownloads: "Aún no hay descargas",
+
+    // Find
+    findPlaceholder: "Buscar en la página…",
+    findPrev: "Coincidencia anterior",
+    findNext: "Siguiente coincidencia",
+
+    // Cookies
+    cookiesTitle: "Cookies",
+    cookiesFilter: "Filtrar por dominio o nombre…",
+    filterSession: "Sesión",
+    filterPersistent: "Persistentes",
+    filterSecure: "Seguras",
+    filterHttpOnly: "HttpOnly",
+
+    // Misc
+    loading: "Cargando…",
+  },
+  fr: {
+    // Settings
+    settingsTitle: "Paramètres de Reach",
+    tabGeneral: "Général",
+    tabKeybinds: "Raccourcis",
+    tabPersonalisation: "Personnalisation",
+    tabPrivacy: "Confidentialité",
+    tabHistory: "Historique",
+
+    // General
+    restoreLastSessionLabel: "Restaurer la dernière session au démarrage",
+    startupPageLabel: "Page de démarrage personnalisée",
+    startupPagePlaceholder: "https://exemple.com",
+    startupPageHint: "Ouverte au lancement de l'application à la place de votre moteur de recherche par défaut",
+    useStartupPageLabel: "Utiliser la page de démarrage au lancement",
+    newTabModeLabel: "La nouvelle page s'ouvre comme",
+    newTabSearch: "Moteur de recherche par défaut",
+    newTabStartup: "Page de démarrage personnalisée",
+    newTabBlank: "Page vierge",
+  zoomLevelLabel: "Zoom",
+
+    suspendIdleLabel: "Suspendre les onglets inactifs",
+    suspendAfterLabel: "Suspendre après",
+
+    minute1: "1 minute",
+    minutes2: "2 minutes",
+    minutes5: "5 minutes",
+    minutes15: "15 minutes",
+    minutes30: "30 minutes",
+    hour1: "1 heure",
+    hours2: "2 heures",
+    hours4: "4 heures",
+
+    hardwareAcceleration: "Accélération matérielle",
+    restartRequired: "Un redémarrage est nécessaire pour appliquer ce changement.",
+    restartNow: "Redémarrer maintenant",
+
+    updatesTitle: "Mises à jour",
+    checkUpdates: "Rechercher des mises à jour",
+
+    language: "Langue",
+
+    // Search
+    addressBarPlaceholder: "Saisir une URL ou une recherche",
+    searchOrUrl: "Rechercher ou saisir une URL",
+
+    // Navigation
+    navBack: "Retour",
+    navForward: "Suivant",
+    navReload: "Actualiser",
+    navHome: "Accueil",
+
+    // Toolbar
+    bookmarks: "Favoris",
+    downloads: "Téléchargements",
+    settings: "Paramètres",
+    popOut: "Détacher",
+    newTab: "Nouvel onglet",
+    closeApp: "Fermer l'application",
+    close: "Fermer",
+
+    // Keybinds
+    middleClickLabel: "Clic central sur l'onglet :",
+    middleClickClose: "Fermer l'onglet",
+    middleClickMute: "Activer/désactiver le son de l'onglet",
+    middleClickRefresh: "Actualiser l'onglet",
+    middleClickNone: "Aucune action",
+
+    scOpenSearch: "Ouvrir le panneau de recherche",
+    scMuteTab: "Raccourci pour couper le son de l'onglet",
+    scRefreshTab: "Raccourci pour actualiser l'onglet",
+    scFindInPage: "Rechercher dans la page",
+    scNavigateBack: "Naviguer en arrière (annuler)",
+    scNavigateForward: "Naviguer en avant (rétablir)",
+    scReopenClosed: "Rouvrir l'onglet fermé",
+    scSwitchForward: "Changer d'onglet (suivant)",
+    scSwitchBack: "Changer d'onglet (précédent)",
+    scNewTab: "Raccourci nouvel onglet",
+    scToggleTabs: "Afficher/masquer la barre d'onglets",
+    scSplitScreen: "Diviser l'écran avec l'onglet suivant (côte à côte)",
+    websiteShortcuts: "Raccourcis de sites web",
+
+    // Theme
+    themeAccent: "Couleur d'accentuation",
+    themeGradientAccent: "Couleur du dégradé d'accentuation",
+    themeSurface: "Couleur de surface du panneau",
+    themeGradientSurface: "Couleur du dégradé du panneau",
+    themeBackground: "Couleur d'arrière-plan",
+    themeInput: "Couleur du champ de saisie",
+    themeBorderColor: "Couleur de la bordure",
+    themeBorderWidth: "Épaisseur de la bordure (px)",
+    themeTabActiveBg: "Couleur de l'onglet sélectionné",
+    themeGradientTabActive: "Dégradé de l'onglet sélectionné",
+    themeTabInactiveBg: "Couleur de l'onglet inactif",
+    themeGradientTabInactive: "Dégradé de l'onglet inactif",
+    themeTabActiveText: "Texte de l'onglet sélectionné",
+    themeTabInactiveText: "Texte de l'onglet inactif",
+    themeSettingsFontColor: "Couleur du texte des paramètres",
+
+    roundedCorners: "Coins arrondis",
+    enableGradient: "Activer le dégradé",
+
+    surfacePattern: "Motif de surface du panneau",
+    patternNone: "Aucun (uni / dégradé)",
+    patternBlobs: "Taches floues",
+    patternSharpBlobs: "Taches de peinture",
+    patternDots: "Pois",
+    patternGrid: "Grille fine",
+    patternNoise: "Bruit papier",
+    patternStripes: "Rayures diagonales",
+    patternTopography: "Lignes topographiques",
+    patternHexagons: "Demi-cercles",
+
+    patternTintColor: "Couleur du motif",
+    patternOpacity: "Opacité du motif (0–100)",
+
+    tabPosition: "Position de la barre d'onglets",
+    posTop: "Haut",
+    posBottom: "Bas",
+    posLeft: "Gauche",
+    posRight: "Droite",
+
+    sidebarWidth: "Largeur de la barre latérale",
+
+    savedThemes: "Thèmes enregistrés",
+    saveCurrentTheme: "Enregistrer le thème actuel",
+    randomise: "Aléatoire",
+
+    // Privacy
+    searchEngineLabel: "Moteur de recherche par défaut",
+
+    enableCookies: "Activer les cookies",
+    cookieLevelLabel: "Niveau des cookies",
+    cookieAllowAll: "Autoriser tous les cookies",
+    cookieBlockThird: "Bloquer les cookies tiers",
+    cookieBlockCross: "Bloquer les cookies intersites (strict)",
+    cookieBlockAll: "Bloquer tous les cookies",
+
+    cookieExceptions: "Exceptions de cookies",
+
+    allow: "Autoriser",
+    block: "Bloquer",
+
+    enableAdBlock: "Activer le bloqueur de publicités",
+    reloadBlockLists: "Recharger les listes de blocage",
+
+    viewSavedPasswords: "Voir les mots de passe enregistrés",
+
+    clearCookies: "Effacer les cookies",
+    viewCookies: "Voir les cookies",
+    clearStorage: "Effacer le stockage du site",
+    clearAll: "Effacer toutes les données",
+    clearPasswords: "Effacer les mots de passe enregistrés",
+    clearDownloadHistory: "Effacer l'historique des téléchargements",
+    clearBrowsingHistory: "Effacer l'historique de navigation",
+
+    // History
+    browsingHistory: "Historique de navigation",
+
+    // Passwords
+    savePassword: "Enregistrer le mot de passe ?",
+    save: "Enregistrer",
+
+    masterPasswordTitle: "Définir un mot de passe maître",
+    masterPasswordSub: "Requis pour enregistrer ou consulter les mots de passe",
+    masterPasswordInput: "Mot de passe maître",
+    masterPasswordEnter: "Saisissez un mot de passe sécurisé",
+    masterPasswordConfirm: "Confirmer le mot de passe",
+    masterPasswordRepeat: "Répéter le mot de passe",
+    setMasterPassword: "Définir le mot de passe maître",
+
+    vaultTitle: "Mots de passe enregistrés",
+    vaultSub: "Saisissez le mot de passe maître pour consulter",
+    unlockVault: "Déverrouiller le coffre",
+
+    // Downloads
+    downloadsTitle: "Téléchargements",
+    clearCompleted: "Effacer les téléchargements terminés",
+
+    filterAll: "Tous",
+    filterActive: "Actifs",
+    filterCompleted: "Terminés",
+    filterFailed: "Échoués",
+
+    noDownloads: "Aucun téléchargement pour le moment",
+
+    // Find
+    findPlaceholder: "Rechercher dans la page…",
+    findPrev: "Correspondance précédente",
+    findNext: "Correspondance suivante",
+
+    // Cookies
+    cookiesTitle: "Cookies",
+    cookiesFilter: "Filtrer par domaine ou nom…",
+    filterSession: "Session",
+    filterPersistent: "Persistants",
+    filterSecure: "Sécurisés",
+    filterHttpOnly: "HttpOnly",
+
+    // Misc
+    loading: "Chargement…",
+  },
+
+  de: {
+    // Settings
+    settingsTitle: "Reach-Einstellungen",
+    tabGeneral: "Allgemein",
+    tabKeybinds: "Tastenkürzel",
+    tabPersonalisation: "Personalisierung",
+    tabPrivacy: "Datenschutz",
+    tabHistory: "Verlauf",
+
+    // General
+    restoreLastSessionLabel: "Letzte Sitzung beim Start wiederherstellen",
+    startupPageLabel: "Benutzerdefinierte Startseite",
+    startupPagePlaceholder: "https://beispiel.com",
+    startupPageHint: "Wird beim Start der App anstelle der Standardsuchmaschine geöffnet",
+    useStartupPageLabel: "Startseite beim Start verwenden",
+    newTabModeLabel: "Neue Registerkarte öffnet als",
+    newTabSearch: "Standardsuchmaschine",
+    newTabStartup: "Benutzerdefinierte Startseite",
+    newTabBlank: "Leere Seite",
+    zoomLevelLabel: "Zoom",
+    suspendIdleLabel: "Inaktive Tabs aussetzen",
+    suspendAfterLabel: "Aussetzen nach",
+
+    minute1: "1 Minute",
+    minutes2: "2 Minuten",
+    minutes5: "5 Minuten",
+    minutes15: "15 Minuten",
+    minutes30: "30 Minuten",
+    hour1: "1 Stunde",
+    hours2: "2 Stunden",
+    hours4: "4 Stunden",
+
+    hardwareAcceleration: "Hardwarebeschleunigung",
+    restartRequired: "Ein Neustart ist erforderlich, um diese Änderung anzuwenden.",
+    restartNow: "Jetzt neu starten",
+
+    updatesTitle: "Aktualisierungen",
+    checkUpdates: "Nach Updates suchen",
+
+    language: "Sprache",
+
+    // Search
+    addressBarPlaceholder: "URL oder Suchbegriff eingeben",
+    searchOrUrl: "Suchen oder URL eingeben",
+
+    // Navigation
+    navBack: "Zurück",
+    navForward: "Vor",
+    navReload: "Neu laden",
+    navHome: "Startseite",
+
+    // Toolbar
+    bookmarks: "Lesezeichen",
+    downloads: "Downloads",
+    settings: "Einstellungen",
+    popOut: "Herauslösen",
+    newTab: "Neuer Tab",
+    closeApp: "App schließen",
+    close: "Schließen",
+
+    // Keybinds
+    middleClickLabel: "Mittelklick auf Tab:",
+    middleClickClose: "Tab schließen",
+    middleClickMute: "Tab stummschalten/aktivieren",
+    middleClickRefresh: "Tab aktualisieren",
+    middleClickNone: "Keine Aktion",
+
+    scOpenSearch: "Suchfenster öffnen",
+    scMuteTab: "Tastenkürzel zum Stummschalten des Tabs",
+    scRefreshTab: "Tastenkürzel zum Aktualisieren des Tabs",
+    scFindInPage: "Auf Seite suchen",
+    scNavigateBack: "Zurück navigieren (Rückgängig)",
+    scNavigateForward: "Vorwärts navigieren (Wiederholen)",
+    scReopenClosed: "Geschlossenen Tab wieder öffnen",
+    scSwitchForward: "Tab wechseln (vorwärts)",
+    scSwitchBack: "Tab wechseln (zurück)",
+    scNewTab: "Tastenkürzel für neuen Tab",
+    scToggleTabs: "Tab-Leiste ein-/ausblenden",
+    scSplitScreen: "Aktuellen Tab mit nächstem teilen (nebeneinander)",
+    websiteShortcuts: "Website-Kurzbefehle",
+
+    // Theme
+    themeAccent: "Akzentfarbe",
+    themeGradientAccent: "Akzent-Verlaufsfarbe",
+    themeSurface: "Oberflächenfarbe des Panels",
+    themeGradientSurface: "Panel-Verlaufsfarbe",
+    themeBackground: "Hintergrundfarbe",
+    themeInput: "Farbe des Eingabefelds",
+    themeBorderColor: "Randfarbe",
+    themeBorderWidth: "Randbreite (px)",
+    themeTabActiveBg: "Farbe des ausgewählten Tabs",
+    themeGradientTabActive: "Verlaufsfarbe des ausgewählten Tabs",
+    themeTabInactiveBg: "Farbe des inaktiven Tabs",
+    themeGradientTabInactive: "Verlaufsfarbe des inaktiven Tabs",
+    themeTabActiveText: "Text des ausgewählten Tabs",
+    themeTabInactiveText: "Text des inaktiven Tabs",
+    themeSettingsFontColor: "Schriftfarbe der Einstellungen",
+
+    roundedCorners: "Abgerundete Ecken",
+    enableGradient: "Verlauf aktivieren",
+
+    surfacePattern: "Panel-Oberflächenmuster",
+    patternNone: "Keines (einfarbig / Verlauf)",
+    patternBlobs: "Verwaschene Formen",
+    patternSharpBlobs: "Farbkleckse",
+    patternDots: "Punkte",
+    patternGrid: "Feines Raster",
+    patternNoise: "Papierstruktur",
+    patternStripes: "Diagonale Streifen",
+    patternTopography: "Topografische Linien",
+    patternHexagons: "Halbkreise",
+
+    patternTintColor: "Farbe des Musters",
+    patternOpacity: "Deckkraft des Musters (0–100)",
+
+    tabPosition: "Position der Tab-Leiste",
+    posTop: "Oben",
+    posBottom: "Unten",
+    posLeft: "Links",
+    posRight: "Rechts",
+
+    sidebarWidth: "Breite der Seitenleiste",
+
+    savedThemes: "Gespeicherte Designs",
+    saveCurrentTheme: "Aktuelles Design speichern",
+    randomise: "Zufällig",
+
+    // Privacy
+    searchEngineLabel: "Standardsuchmaschine",
+
+    enableCookies: "Cookies aktivieren",
+    cookieLevelLabel: "Cookie-Stufe",
+    cookieAllowAll: "Alle Cookies erlauben",
+    cookieBlockThird: "Drittanbieter-Cookies blockieren",
+    cookieBlockCross: "Websiteübergreifende Cookies blockieren (streng)",
+    cookieBlockAll: "Alle Cookies blockieren",
+
+    cookieExceptions: "Cookie-Ausnahmen",
+
+    allow: "Erlauben",
+    block: "Blockieren",
+
+    enableAdBlock: "Werbeblocker aktivieren",
+    reloadBlockLists: "Blockierlisten neu laden",
+
+    viewSavedPasswords: "Gespeicherte Passwörter anzeigen",
+
+    clearCookies: "Cookies löschen",
+    viewCookies: "Cookies anzeigen",
+    clearStorage: "Website-Speicher löschen",
+    clearAll: "Alle Daten löschen",
+    clearPasswords: "Gespeicherte Passwörter löschen",
+    clearDownloadHistory: "Downloadverlauf löschen",
+    clearBrowsingHistory: "Browserverlauf löschen",
+
+    // History
+    browsingHistory: "Browserverlauf",
+
+    // Passwords
+    savePassword: "Passwort speichern?",
+    save: "Speichern",
+
+    masterPasswordTitle: "Master-Passwort festlegen",
+    masterPasswordSub: "Erforderlich zum Speichern oder Anzeigen von Passwörtern",
+    masterPasswordInput: "Master-Passwort",
+    masterPasswordEnter: "Geben Sie ein starkes Passwort ein",
+    masterPasswordConfirm: "Passwort bestätigen",
+    masterPasswordRepeat: "Passwort wiederholen",
+    setMasterPassword: "Master-Passwort festlegen",
+
+    vaultTitle: "Gespeicherte Passwörter",
+    vaultSub: "Master-Passwort eingeben, um anzuzeigen",
+    unlockVault: "Tresor entsperren",
+
+    // Downloads
+    downloadsTitle: "Downloads",
+    clearCompleted: "Abgeschlossene löschen",
+
+    filterAll: "Alle",
+    filterActive: "Aktiv",
+    filterCompleted: "Abgeschlossen",
+    filterFailed: "Fehlgeschlagen",
+
+    noDownloads: "Noch keine Downloads",
+
+    // Find
+    findPlaceholder: "Auf Seite suchen…",
+    findPrev: "Vorheriger Treffer",
+    findNext: "Nächster Treffer",
+
+    // Cookies
+    cookiesTitle: "Cookies",
+    cookiesFilter: "Nach Domain oder Name filtern…",
+    filterSession: "Sitzung",
+    filterPersistent: "Dauerhaft",
+    filterSecure: "Sicher",
+    filterHttpOnly: "HttpOnly",
+
+    // Misc
+    loading: "Wird geladen…",
+    },
+};
+
+function t(key) {
+  const lang = settings.language || 'en';
+  return (TRANSLATIONS[lang] && TRANSLATIONS[lang][key]) || TRANSLATIONS.en[key] || key;
+}
+
+function applyTranslations(lang = "en") {
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    el.textContent = t(el.dataset.i18n, lang);
+  });
+
+  document.querySelectorAll("[data-i18n-placeholder]").forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder, lang);
+  });
+
+  document.querySelectorAll("[data-i18n-title]").forEach(el => {
+    el.title = t(el.dataset.i18nTitle, lang);
+  });
+}
+
+window.TRANSLATIONS = TRANSLATIONS;
+window.t = t;
+window.applyTranslations = applyTranslations;
