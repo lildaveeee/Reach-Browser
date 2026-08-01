@@ -1520,7 +1520,8 @@ button img {
   color: var(--text);
 }
 .cookie-exception-row select {
-  flex: 3 1 0;
+  flex: 0 0 120px;
+  width: 120px;
   height: 44px;
   padding: 0 12px;
   border-radius: 14px;
@@ -1532,10 +1533,6 @@ button img {
 .settings-control input[type="number"]::-webkit-inner-spin-button,
 .settings-control input[type="number"]::-webkit-outer-spin-button {
   height: auto;
-}
-
-.cookie-exception-row select {
-  padding: 0 12px;
 }
 
 .switch-control {
