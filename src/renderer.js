@@ -251,7 +251,9 @@ const defaultSettings = {
       { domain: 'accounts.google.com', action: 'allow' },
       { domain: 'youtube.com', action: 'allow' },
       { domain: '', action: 'allow' }
-    ]
+    ],
+    spoofedOS: 'windows',
+    spoofHardware: true,
   },
   credentials: [],
   closedTabsHistory: [],
@@ -1993,11 +1995,14 @@ function populateSettingsUI() {
   const adblockToggle = document.getElementById('adblock-enabled');
   if (adblockToggle) adblockToggle.checked = settings.privacy.adBlockEnabled ?? true;
   const hwAccelToggle = document.getElementById('hardware-acceleration-toggle');
-  if (hwAccelToggle) hwAccelToggle.addEventListener('change', (e) => {
-    settings.hardwareAcceleration = e.target.checked;
-    saveSettings();
-    document.getElementById('hw-accel-restart-note')?.classList.remove('hidden');
-  });
+  if (hwAccelToggle) {
+    hwAccelToggle.checked = settings.hardwareAcceleration !== false;
+    hwAccelToggle.addEventListener('change', (e) => {
+      settings.hardwareAcceleration = e.target.checked;
+      saveSettings();
+      document.getElementById('hw-accel-restart-note')?.classList.remove('hidden');
+    });
+  }
 
   const hwAccelRestartBtn = document.getElementById('hw-accel-restart-btn');
   if (hwAccelRestartBtn) hwAccelRestartBtn.addEventListener('click', () => {
@@ -2020,18 +2025,357 @@ function populateSettingsUI() {
   }
   const restoreSessionToggle = document.getElementById('restore-last-session');
   if (restoreSessionToggle) restoreSessionToggle.checked = settings.restoreLastSession || false;
+  const devModeToggle = document.getElementById('dev-mode-toggle');
+  if (devModeToggle) {
+    devModeToggle.checked = settings.devMode || false;
+    updateDevTabVisibility(settings.devMode || false);
+  }
   const zoomInput = document.getElementById('zoom-level');
   const zoomDisplay = document.getElementById('zoom-level-display');
   if (zoomInput) {
     zoomInput.value = settings.zoomLevel || 100;
     if (zoomDisplay) zoomDisplay.textContent = `${settings.zoomLevel || 100}%`;
   }
-}
+
+  const spoofedOSSelect = document.getElementById('spoofed-os');
+  if (spoofedOSSelect) spoofedOSSelect.value = settings.privacy.spoofedOS || 'windows';
+  const spoofHardwareToggle = document.getElementById('spoof-hardware');
+  if (spoofHardwareToggle) spoofHardwareToggle.checked = settings.privacy.spoofHardware !== false;
+} 
 
 function updateGradientControlsVisibility() {
   const visible = themeGradient && themeGradient.checked;
   themeGradientControls.forEach((control) => { control.classList.toggle('hidden', !visible); });
 }
+
+function updateDevTabVisibility(enabled) {
+  const devTab = document.querySelector('.settings-tab[data-tab="devtools"]');
+  if (devTab) devTab.style.display = enabled ? '' : 'none';
+  if (!enabled) {
+    const devSection = document.querySelector('.settings-section[data-section="devtools"]');
+    if (devSection && devSection.classList.contains('active')) {
+      setSettingsTab('general');
+    }
+  }
+}
+
+let _perfInterval = null;
+let _perfFrameCount = 0;
+let _perfLastTime = performance.now();
+let _perfFPS = 0;
+
+function startPerfMonitor() {
+  stopPerfMonitor();
+
+  function countFrame() {
+    _perfFrameCount++;
+    _perfRafHandle = requestAnimationFrame(countFrame);
+  }
+  let _perfRafHandle = requestAnimationFrame(countFrame);
+
+  _perfInterval = setInterval(() => {
+    const now = performance.now();
+    const elapsed = (now - _perfLastTime) / 1000;
+    _perfFPS = Math.round(_perfFrameCount / elapsed);
+    _perfFrameCount = 0;
+    _perfLastTime = now;
+
+    updatePerfUI();
+    _perfRafHandle;
+  }, 1000);
+
+  window._perfRafHandle = _perfRafHandle;
+  window._countFrame = countFrame;
+}
+
+function stopPerfMonitor() {
+  if (window._perfOverlayEl && window._perfOverlayEl.style.display !== 'none') return;
+  if (_perfInterval) { clearInterval(_perfInterval); _perfInterval = null; }
+  if (window._perfRafHandle) { cancelAnimationFrame(window._perfRafHandle); window._perfRafHandle = null; }
+}
+
+function togglePerfOverlay() {
+  const el = window._perfOverlayEl;
+  if (!el) return;
+  const showing = el.style.display !== 'none';
+  if (showing) {
+    el.style.display = 'none';
+    const devTabActive = document.querySelector('.settings-section[data-section="devtools"]')?.classList.contains('active');
+    if (!devTabActive) stopPerfMonitor();
+  } else {
+    el.style.display = 'flex';
+    startPerfMonitor();
+    updatePerfUI();
+  }
+  const cb = document.getElementById('perf-overlay-toggle');
+  if (cb) cb.checked = !showing;
+}
+
+function updatePerfUI() {
+  const isDevTab = document.querySelector('.settings-section[data-section="devtools"]')?.classList.contains('active');
+  const overlayVisible = window._perfOverlayEl?.style.display !== 'none';
+
+  if (isDevTab) {
+    const fpsEl = document.getElementById('perf-fps');
+    const memEl = document.getElementById('perf-mem');
+    const latEl = document.getElementById('perf-latency');
+    const navEl = document.getElementById('perf-nav-timing');
+
+    if (fpsEl) {
+      fpsEl.textContent = `${_perfFPS} FPS`;
+      fpsEl.style.color = _perfFPS >= 55 ? 'rgb(34,197,94)' : _perfFPS >= 30 ? 'rgb(234,179,8)' : 'rgb(239,68,68)';
+    }
+
+    if (memEl && performance.memory) {
+      const used = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
+      const total = (performance.memory.totalJSHeapSize / 1048576).toFixed(1);
+      const limit = (performance.memory.jsHeapSizeLimit / 1048576).toFixed(1);
+      memEl.innerHTML = `<span>${used} MB used</span><span style="color:var(--muted)"> / ${total} MB alloc / ${limit} MB limit</span>`;
+    } else if (memEl) {
+      memEl.textContent = 'Memory API unavailable';
+    }
+
+    if (latEl) {
+      const t0 = performance.now();
+      requestAnimationFrame(() => {
+        const latency = (performance.now() - t0).toFixed(1);
+        latEl.textContent = `${latency} ms`;
+        latEl.style.color = parseFloat(latency) < 8 ? 'rgb(34,197,94)' : parseFloat(latency) < 16 ? 'rgb(234,179,8)' : 'rgb(239,68,68)';
+      });
+    }
+
+    if (navEl && performance.getEntriesByType) {
+      const entries = performance.getEntriesByType('navigation');
+      if (entries.length) {
+        const nav = entries[0];
+        navEl.innerHTML = `
+          <span>DNS: ${Math.round(nav.domainLookupEnd - nav.domainLookupStart)}ms</span>
+          <span>Connect: ${Math.round(nav.connectEnd - nav.connectStart)}ms</span>
+          <span>TTFB: ${Math.round(nav.responseStart - nav.requestStart)}ms</span>
+          <span>DOM: ${Math.round(nav.domComplete - nav.domInteractive)}ms</span>
+          <span>Load: ${Math.round(nav.loadEventEnd - nav.startTime)}ms</span>
+        `;
+      }
+    }
+
+    const wvEl = document.getElementById('perf-webview');
+    const tab = tabs.find(t => t.id === activeTabId);
+    if (wvEl && tab && tab.webview) {
+      try {
+        tab.webview.executeJavaScript(`
+          JSON.stringify({
+            readyState: document.readyState,
+            resources: performance.getEntriesByType('resource').length,
+            heap: (() => { try { return performance.memory ? Math.round(performance.memory.usedJSHeapSize/1e6) : null; } catch(e) { return null; } })()
+          })
+        `, true).then(result => {
+          try {
+            const data = JSON.parse(result);
+            wvEl.innerHTML = `
+              <span>Resources loaded: ${data.resources}</span>
+              <span>Ready state: ${data.readyState}</span>
+              ${data.heap !== null ? `<span>Page heap: ${data.heap} MB</span>` : ''}
+            `;
+          } catch {}
+        }).catch(() => { wvEl.textContent = 'No active page'; });
+      } catch {}
+    } else if (wvEl) {
+      wvEl.textContent = 'No active tab';
+    }
+  }
+
+  if (overlayVisible && window._perfOverlayEl) {
+    const ovFps = document.getElementById('perf-ov-fps');
+    const ovLat = document.getElementById('perf-ov-lat');
+    const ovMem = document.getElementById('perf-ov-mem');
+    const ovWv  = document.getElementById('perf-ov-wv');
+
+    if (ovFps) {
+      ovFps.textContent = _perfFPS;
+      ovFps.style.color = _perfFPS >= 55 ? 'rgb(34,197,94)' : _perfFPS >= 30 ? 'rgb(234,179,8)' : 'rgb(239,68,68)';
+    }
+
+    if (ovLat) {
+      const t0 = performance.now();
+      requestAnimationFrame(() => {
+        const lat = (performance.now() - t0).toFixed(1);
+        ovLat.textContent = lat;
+        ovLat.style.color = parseFloat(lat) < 8 ? 'rgb(34,197,94)' : parseFloat(lat) < 16 ? 'rgb(234,179,8)' : 'rgb(239,68,68)';
+      });
+    }
+
+    if (ovMem && performance.memory) {
+      ovMem.textContent = (performance.memory.usedJSHeapSize / 1048576).toFixed(0);
+    }
+
+    if (ovWv) {
+      const tab = tabs.find(t => t.id === activeTabId);
+      if (tab && tab.webview) {
+        tab.webview.executeJavaScript(`
+          JSON.stringify({
+            readyState: document.readyState,
+            resources: performance.getEntriesByType('resource').length,
+            heap: (() => { try { return performance.memory ? Math.round(performance.memory.usedJSHeapSize/1e6) : null; } catch(e) { return null; } })()
+          })
+        `, true).then(result => {
+          try {
+            const data = JSON.parse(result);
+            ovWv.innerHTML = [
+              `<span>${data.resources} res</span>`,
+              `<span style="color:rgba(255,255,255,0.1)">·</span>`,
+              `<span>${data.readyState}</span>`,
+              data.heap !== null ? `<span style="color:rgba(255,255,255,0.1)">·</span><span>${data.heap}mb page</span>` : ''
+            ].filter(Boolean).join('');
+          } catch {}
+        }).catch(() => { ovWv.innerHTML = ''; });
+      } else {
+        ovWv.innerHTML = '';
+      }
+    }
+  }
+}
+
+async function runNetworkTest() {
+  const btn = document.getElementById('network-test-btn');
+  const statusEl = document.getElementById('network-test-status');
+  const track = document.getElementById('network-test-track');
+  const fill = document.getElementById('network-test-fill');
+
+  const pingEls = {
+    cf:     document.getElementById('ping-cf'),
+    google: document.getElementById('ping-google'),
+    github: document.getElementById('ping-github'),
+  };
+  const dlEl = document.getElementById('speed-download');
+  const ulEl = document.getElementById('speed-upload');
+
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = 'Running…';
+
+  Object.values(pingEls).forEach(el => { if (el) { el.textContent = '—'; el.style.color = 'var(--settings-font-color)'; } });
+  if (dlEl) { dlEl.textContent = '—'; dlEl.style.color = 'var(--settings-font-color)'; }
+  if (ulEl) { ulEl.textContent = '—'; ulEl.style.color = 'var(--settings-font-color)'; }
+  if (track) track.style.display = 'block';
+
+  function setProgress(pct) { if (fill) fill.style.width = `${pct}%`; }
+  function setStatus(msg)    { if (statusEl) statusEl.textContent = msg; }
+
+  function pingColor(ms) {
+    return ms < 60 ? 'rgb(34,197,94)' : ms < 150 ? 'rgb(234,179,8)' : 'rgb(239,68,68)';
+  }
+  function speedColor(mbps, isDownload) {
+    const hi = isDownload ? 50 : 20;
+    const lo = isDownload ? 10 : 5;
+    return mbps >= hi ? 'rgb(34,197,94)' : mbps >= lo ? 'rgb(234,179,8)' : 'rgb(239,68,68)';
+  }
+
+  setStatus('Pinging…');
+  setProgress(5);
+
+  const pingTargets = [
+    { id: 'cf',     label: 'Cloudflare', url: 'https://1.1.1.1/favicon.ico' },
+    { id: 'google', label: 'Google',     url: 'https://www.google.com/favicon.ico' },
+    { id: 'github', label: 'GitHub',     url: 'https://github.com/favicon.ico' },
+  ];
+
+  await Promise.all(pingTargets.map(async ({ id, url }) => {
+    const el = pingEls[id];
+    try {
+      const t0 = performance.now();
+      await fetch(url + '?_=' + Date.now(), { mode: 'no-cors', cache: 'no-store' });
+      const ms = Math.round(performance.now() - t0);
+      if (el) { el.textContent = ms; el.style.color = pingColor(ms); }
+    } catch {
+      if (el) { el.textContent = 'err'; el.style.color = 'rgb(239,68,68)'; }
+    }
+  }));
+
+  setProgress(25);
+
+  setStatus('Testing download…');
+  try {
+    const url = 'https://speed.cloudflare.com/__down?bytes=10000000';
+    const t0 = performance.now();
+    const res = await fetch(url + '&_=' + Date.now(), { cache: 'no-store' });
+    const reader = res.body.getReader();
+    let received = 0;
+    const total = 10000000;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      received += value.length;
+      setProgress(25 + Math.round((received / total) * 40));
+    }
+    const elapsed = (performance.now() - t0) / 1000;
+    const mbps = ((received * 8) / 1e6 / elapsed).toFixed(1);
+    if (dlEl) { dlEl.textContent = mbps; dlEl.style.color = speedColor(parseFloat(mbps), true); }
+  } catch {
+    if (dlEl) { dlEl.textContent = 'err'; dlEl.style.color = 'rgb(239,68,68)'; }
+  }
+
+  setProgress(70);
+
+  setStatus('Testing upload…');
+  try {
+    const size = 3000000;
+    const payload = new Uint8Array(size);
+    crypto.getRandomValues(payload.subarray(0, Math.min(65536, size)));
+    for (let i = 65536; i < size; i++) payload[i] = i & 0xff;
+    const t0 = performance.now();
+    await fetch('https://speed.cloudflare.com/__up', {
+      method: 'POST',
+      body: new Blob([payload]),
+      cache: 'no-store',
+    });
+    const elapsed = (performance.now() - t0) / 1000;
+    const mbps = ((size * 8) / 1e6 / elapsed).toFixed(1);
+    if (ulEl) { ulEl.textContent = mbps; ulEl.style.color = speedColor(parseFloat(mbps), false); }
+  } catch {
+    if (ulEl) { ulEl.textContent = 'err'; ulEl.style.color = 'rgb(239,68,68)'; }
+  }
+
+  setProgress(100);
+  setStatus('Done');
+  btn.disabled = false;
+  btn.textContent = 'Run test';
+  setTimeout(() => {
+    setStatus('');
+    if (track) { track.style.display = 'none'; if (fill) fill.style.width = '0%'; }
+  }, 3000);
+}
+
+function clearPerfLog() {
+  const logEl = document.getElementById('perf-log');
+  if (logEl) logEl.innerHTML = '';
+}
+
+const _origConsoleWarn = console.warn;
+const _origConsoleError = console.error;
+const _perfLog = [];
+
+function _appendPerfLog(type, msg) {
+  _perfLog.unshift({ type, msg, time: new Date().toLocaleTimeString() });
+  if (_perfLog.length > 100) _perfLog.length = 100;
+  const logEl = document.getElementById('perf-log');
+  if (!logEl) return;
+  logEl.innerHTML = _perfLog.map(e => `
+    <div style="display:flex;gap:8px;align-items:flex-start;padding:4px 0;border-bottom:1px solid var(--border-color);">
+      <span style="font-size:0.7rem;color:var(--muted);flex-shrink:0;margin-top:1px;">${e.time}</span>
+      <span style="font-size:0.7rem;font-weight:600;flex-shrink:0;color:${e.type === 'error' ? 'rgb(239,68,68)' : 'rgb(234,179,8)'};">${e.type.toUpperCase()}</span>
+      <span style="font-size:0.72rem;color:var(--settings-font-color);word-break:break-all;">${e.msg}</span>
+    </div>
+  `).join('');
+}
+
+console.warn = function(...args) {
+  _origConsoleWarn.apply(console, args);
+  _appendPerfLog('warn', args.join(' '));
+};
+console.error = function(...args) {
+  _origConsoleError.apply(console, args);
+  _appendPerfLog('error', args.join(' '));
+};
 
 function updateVerticalWidthVisibility() {
   const control = document.getElementById('vertical-tab-width-control');
@@ -2047,6 +2391,7 @@ function openSettings() {
   populateSettingsUI();
   renderThemePresets();
   startHistoryLiveUpdates();
+  if (settings.devMode) startPerfMonitor();
 }
 
 function closeSettings() {
@@ -2054,12 +2399,23 @@ function closeSettings() {
   settingsModal.setAttribute('aria-hidden', 'true');
   saveSettings();
   stopHistoryLiveUpdates();
+  stopPerfMonitor();
 }
 
 function setSettingsTab(tabName) {
-  settingsTabs.forEach((button) => { button.classList.toggle('active', button.dataset.tab === tabName); });
-  settingsSections.forEach((section) => { section.classList.toggle('active', section.dataset.section === tabName); });
+  document.querySelectorAll('.settings-tab').forEach((button) => {
+    button.classList.toggle('active', button.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.settings-section').forEach((section) => {
+    section.classList.toggle('active', section.dataset.section === tabName);
+  });
   if (tabName === 'history') renderHistorySection();
+  if (tabName === 'devtools') {
+    startPerfMonitor();
+    updatePerfUI();
+  } else {
+    stopPerfMonitor();
+  }
 }
 
 function hexToRgbString(color) {
@@ -3633,6 +3989,36 @@ if (searchEngineSelect) searchEngineSelect.addEventListener('change', (e) => {
 });
 if (cookieEnabled) cookieEnabled.addEventListener('change', (event) => { settings.privacy.cookiesEnabled = event.target.checked; saveSettings(); applyCookiePolicy(settings.privacy); });
 if (cookieLevel) cookieLevel.addEventListener('change', (event) => { settings.privacy.cookieLevel = event.target.value; saveSettings(); applyCookiePolicy(settings.privacy); });
+
+const spoofedOSSelect = document.getElementById('spoofed-os');
+if (spoofedOSSelect) spoofedOSSelect.addEventListener('change', (e) => {
+  settings.privacy.spoofedOS = e.target.value;
+  saveSettings();
+  if (window.electronAPI?.setSpoofedOS) window.electronAPI.setSpoofedOS(e.target.value);
+
+  const osUAMap = {
+    windows: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.228 Safari/537.36',
+    macos:   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.228 Safari/537.36',
+    linux:   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.228 Safari/537.36',
+  };
+  const ua = osUAMap[e.target.value] || osUAMap.windows;
+
+  tabs.forEach((tab) => {
+    if (!tab.webview) return;
+    try {
+      tab.webview.setUserAgent(ua);
+      tab.webview.reload();
+    } catch (err) {}
+  });
+});
+
+const spoofHardwareToggle = document.getElementById('spoof-hardware');
+if (spoofHardwareToggle) spoofHardwareToggle.addEventListener('change', (e) => {
+  settings.privacy.spoofHardware = e.target.checked;
+  saveSettings();
+  if (window.electronAPI?.setSpoofHardware) window.electronAPI.setSpoofHardware(e.target.checked);
+});
+
 if (downloadsBtn) downloadsBtn.addEventListener('click', openDownloadsModal);
 if (downloadsModalClose) downloadsModalClose.addEventListener('click', closeDownloadsModal);
 if (downloadsModal) downloadsModal.addEventListener('click', (event) => { if (event.target === downloadsModal) closeDownloadsModal(); });
@@ -3734,6 +4120,28 @@ const restoreSessionToggle = document.getElementById('restore-last-session');
 if (restoreSessionToggle) restoreSessionToggle.addEventListener('change', e => {
   settings.restoreLastSession = e.target.checked;
   saveSettings();
+});
+
+const devModeToggleEl = document.getElementById('dev-mode-toggle');
+if (devModeToggleEl) devModeToggleEl.addEventListener('change', e => {
+  settings.devMode = e.target.checked;
+  saveSettings();
+  updateDevTabVisibility(e.target.checked);
+});
+
+const perfOverlayToggleEl = document.getElementById('perf-overlay-toggle');
+if (perfOverlayToggleEl) perfOverlayToggleEl.addEventListener('change', e => {
+  const el = window._perfOverlayEl;
+  if (!el) return;
+  if (e.target.checked) {
+    el.style.display = 'flex';
+    startPerfMonitor();
+    updatePerfUI();
+  } else {
+    el.style.display = 'none';
+    const devTabActive = document.querySelector('.settings-section[data-section="devtools"]')?.classList.contains('active');
+    if (!devTabActive) stopPerfMonitor();
+  }
 });
 
 const zoomInput = document.getElementById('zoom-level');
@@ -4320,6 +4728,38 @@ addressBar.addEventListener('keydown', (event) => {
   }
 });
 
+(function setupPerfOverlay() {
+  const overlay = document.createElement('div');
+  overlay.id = 'perf-overlay';
+  overlay.style.cssText = [
+    'position:fixed;top:12px;left:12px;z-index:99998;',
+    'background:rgba(10,8,9,0.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);',
+    'border:1px solid rgba(255,255,255,0.06);border-radius:8px;',
+    'padding:7px 10px;',
+    'font-family:ui-monospace,SFMono-Regular,Menlo,monospace;',
+    'display:none;flex-direction:column;gap:3px;',
+    'pointer-events:none;user-select:none;',
+    'min-width:0;'
+  ].join('');
+
+  overlay.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="perf-ov-fps" style="font-size:0.95rem;font-weight:600;color:rgb(34,197,94);font-variant-numeric:tabular-nums;letter-spacing:-0.02em;">—</span>
+      <span style="font-size:0.72rem;color:rgba(255,255,255,0.28);font-weight:400;">fps</span>
+      <span style="width:1px;height:10px;background:rgba(255,255,255,0.1);display:inline-block;"></span>
+      <span id="perf-ov-lat" style="font-size:0.95rem;font-weight:600;color:rgb(34,197,94);font-variant-numeric:tabular-nums;letter-spacing:-0.02em;">—</span>
+      <span style="font-size:0.72rem;color:rgba(255,255,255,0.28);font-weight:400;">ms</span>
+      <span style="width:1px;height:10px;background:rgba(255,255,255,0.1);display:inline-block;"></span>
+      <span id="perf-ov-mem" style="font-size:0.95rem;font-weight:600;color:rgba(255,255,255,0.55);font-variant-numeric:tabular-nums;letter-spacing:-0.02em;">—</span>
+      <span style="font-size:0.72rem;color:rgba(255,255,255,0.28);font-weight:400;">mb</span>
+    </div>
+    <div id="perf-ov-wv" style="font-size:0.68rem;color:rgba(255,255,255,0.22);font-variant-numeric:tabular-nums;display:flex;gap:8px;"></div>
+  `;
+
+  document.body.appendChild(overlay);
+  window._perfOverlayEl = overlay;
+})();
+
 window.addEventListener('DOMContentLoaded', async () => {
   settings = await loadSettings();
   closedTabs = Array.isArray(settings.closedTabsHistory)
@@ -4327,12 +4767,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     : [];
 
   applyTranslations(settings.language || 'en');
-
+  applyZoom(settings.zoomLevel || 100);
   applyTheme(settings.theme);
   applyTabPosition(settings.theme.tabPosition);
   applyTabBarVisibility();
-  applyZoom(settings.zoomLevel || 100);
   applyCookiePolicy(settings.privacy);
+  updateDevTabVisibility(settings.devMode || false);
 
   setTimeout(() => {
     populateWebsiteShortcutsUI();
