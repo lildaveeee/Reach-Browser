@@ -8,11 +8,23 @@ const settingsPath = path.join(app.getPath('userData'), 'settings.json');
 try {
   const raw = fs.readFileSync(settingsPath, 'utf8');
   const parsed = JSON.parse(raw);
+
   if (parsed?.hardwareAcceleration === false) {
     app.disableHardwareAcceleration();
   }
-} catch (e) {
-}
+
+  const os = parsed?.privacy?.spoofedOS || 'windows';
+  const chromeVer = process.versions.chrome || '120.0.0.0';
+  const uaMap = {
+    windows: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVer} Safari/537.36`,
+    macos:   `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVer} Safari/537.36`,
+    linux:   `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVer} Safari/537.36`,
+  };
+  const ua = uaMap[os] || uaMap.windows;
+  app.commandLine.appendSwitch('user-agent', ua);
+
+} catch (e) {}
+
 
 let mainWindow = null;
 let cookiePolicy = {
@@ -270,7 +282,42 @@ app.whenReady().then(async () => {
   const savedSettings = await loadSharedSettings();
   adBlockEnabled = savedSettings?.privacy?.adBlockEnabled !== false;
   loadAdBlockLists().catch(() => {});
-  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+  const savedPrivacy = savedSettings?.privacy || {};
+  const spoofedOS = savedPrivacy.spoofedOS || 'windows';
+  let spoofHardware = savedPrivacy.spoofHardware !== false;
+
+  if (spoofedOS === 'windows') {
+    app.commandLine.appendSwitch('user-agent', 
+      `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`
+    );
+  } else if (spoofedOS === 'macos') {
+    app.commandLine.appendSwitch('user-agent',
+      `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`
+    );
+  } else if (spoofedOS === 'linux') {
+    app.commandLine.appendSwitch('user-agent',
+      `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${process.versions.chrome} Safari/537.36`
+    );
+  }
+
+  function buildUA(os) {
+    const rawUA = session.defaultSession.getUserAgent();
+    const chromeMatch = rawUA.match(/Chrome\/([\d.]+)/);
+    const chromeVersion = chromeMatch ? chromeMatch[1] : '120.0.0.0';
+    switch (os) {
+      case 'macos':
+        return `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+      case 'linux':
+        return `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+      default:
+        return `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${chromeVersion} Safari/537.36`;
+    }
+  }
+
+  let currentUA = buildUA(spoofedOS);
+  session.defaultSession.setUserAgent(currentUA);
+
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => { 
     if (permission === 'fullscreen') return callback(true);
     return callback(false);
   });
@@ -288,10 +335,30 @@ app.whenReady().then(async () => {
     { urls: ['*://*/*'] },
     (details, callback) => {
       const requestHeaders = { ...details.requestHeaders };
-      if (shouldBlockCookies(details)) {
-        for (const header of Object.keys(requestHeaders)) {
-          if (header.toLowerCase() === 'cookie') delete requestHeaders[header];
+
+      if (details.url.includes('discord.com')) {
+        console.log('Discord request headers:', JSON.stringify(requestHeaders, null, 2));
+      }
+
+      const platformMap = {
+        windows: { 'sec-ch-ua-platform': '"Windows"', 'sec-ch-ua-platform-version': '"10.0.0"' },
+        macos:   { 'sec-ch-ua-platform': '"macOS"',   'sec-ch-ua-platform-version': '"10.15.7"' },
+        linux:   { 'sec-ch-ua-platform': '"Linux"',   'sec-ch-ua-platform-version': '"5.15.0"' },
+      };
+      const platformHeaders = platformMap[spoofedOS] || platformMap.windows;
+
+      for (const key of Object.keys(requestHeaders)) {
+        const lower = key.toLowerCase();
+        if (lower === 'sec-ch-ua-platform' || lower === 'sec-ch-ua-platform-version') {
+          delete requestHeaders[key];
         }
+      }
+      requestHeaders['sec-ch-ua-platform'] = platformHeaders['sec-ch-ua-platform'];
+      requestHeaders['sec-ch-ua-platform-version'] = platformHeaders['sec-ch-ua-platform-version'];
+
+      if (!shouldBlockCookies(details)) return callback({ requestHeaders });
+      for (const header of Object.keys(requestHeaders)) {
+        if (header.toLowerCase() === 'cookie') delete requestHeaders[header];
       }
       callback({ requestHeaders });
     }
@@ -369,6 +436,77 @@ app.whenReady().then(async () => {
       webPreferences.sandbox = true;
       webPreferences.webSecurity = true;
       webPreferences.allowRunningInsecureContent = false;
+      params.useragent = currentUA;
+    });
+
+    contents.on('dom-ready', () => {
+      const platformMap = {
+        windows: { platform: 'Win32', oscpu: 'Windows NT 10.0; Win64; x64', uaDataPlatform: 'Windows' },
+        macos:   { platform: 'MacIntel', oscpu: 'Intel Mac OS X 10.15', uaDataPlatform: 'macOS' },
+        linux:   { platform: 'Linux x86_64', oscpu: 'Linux x86_64', uaDataPlatform: 'Linux' },
+      };
+      const spoof = platformMap[spoofedOS] || platformMap.windows;
+
+      const hardwareSpoofScript = spoofHardware ? `
+        try { Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 4, configurable: true }); } catch(e) {}
+        try { Object.defineProperty(navigator, 'deviceMemory', { get: () => 8, configurable: true }); } catch(e) {}
+        try {
+          const _getParam = WebGLRenderingContext.prototype.getParameter;
+          function _spoofWebGL(orig) {
+            return function(param) {
+              if (param === 37445) return 'Google Inc.';
+              if (param === 37446) return 'ANGLE (Intel, Intel(R) UHD Graphics 620, OpenGL 4.6)';
+              return orig.call(this, param);
+            };
+          }
+          WebGLRenderingContext.prototype.getParameter = _spoofWebGL(_getParam);
+          if (typeof WebGL2RenderingContext !== 'undefined') {
+            const _getParam2 = WebGL2RenderingContext.prototype.getParameter;
+            WebGL2RenderingContext.prototype.getParameter = _spoofWebGL(_getParam2);
+          }
+        } catch(e) {}
+      ` : '';
+
+      try {
+        contents.executeJavaScript(`
+          (function() {
+            if (window.__hardwareSpoofed) return;
+            window.__hardwareSpoofed = true;
+
+            try { Object.defineProperty(navigator, 'platform', { get: () => ${JSON.stringify(spoof.platform)}, configurable: true }); } catch(e) {}
+            try { Object.defineProperty(navigator, 'oscpu', { get: () => ${JSON.stringify(spoof.oscpu)}, configurable: true }); } catch(e) {}
+
+            try {
+              const _realUAData = navigator.userAgentData;
+              if (_realUAData) {
+                const _spoofedPlatform = ${JSON.stringify(spoof.uaDataPlatform)};
+                const _spoofedPlatformVersion = ${JSON.stringify(spoofedOS === 'windows' ? '10.0.0' : spoofedOS === 'macos' ? '10.15.7' : '5.15.0')};
+
+                const _origGetHighEntropy = _realUAData.getHighEntropyValues.bind(_realUAData);
+                Object.defineProperty(navigator, 'userAgentData', {
+                  get: () => new Proxy(_realUAData, {
+                    get(target, prop) {
+                      if (prop === 'platform') return _spoofedPlatform;
+                      if (prop === 'getHighEntropyValues') {
+                        return (hints) => _origGetHighEntropy(hints).then(values => ({
+                          ...values,
+                          platform: _spoofedPlatform,
+                          platformVersion: _spoofedPlatformVersion,
+                        }));
+                      }
+                      const val = target[prop];
+                      return typeof val === 'function' ? val.bind(target) : val;
+                    }
+                  }),
+                  configurable: true
+                });
+              }
+            } catch(e) {}
+
+            ${hardwareSpoofScript}
+          })();
+        `, true).catch(() => {});
+      } catch(e) {}
     });
 
     contents.on('before-input-event', (event, input) => {
@@ -693,6 +831,18 @@ app.whenReady().then(async () => {
     });
   });
   ipcMain.handle('get-app-version', () => app.getVersion());
+  
+  ipcMain.handle('set-spoofed-os', (event, os) => {
+    spoofedOS = os;
+    currentUA = buildUA(os);
+    session.defaultSession.setUserAgent(currentUA);
+    return { success: true };
+  });
+
+  ipcMain.handle('set-spoof-hardware', (event, enabled) => {
+    spoofHardware = enabled;
+    return { success: true };
+  });
   ipcMain.handle('open-external', (_, url) => shell.openExternal(url));
   ipcMain.handle('toggle-maximise', (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);
@@ -737,7 +887,8 @@ app.whenReady().then(async () => {
     if (filePath) shell.openPath(filePath);
     return { success: true };
   });
-
+  app.commandLine.appendSwitch('enable-features', 'PrivacySandboxAdsAPIsOverride');
+  app.commandLine.appendSwitch('force-color-profile', 'srgb');
   createWindow();
 
   app.on('activate', () => {
