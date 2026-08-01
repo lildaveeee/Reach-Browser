@@ -1650,7 +1650,7 @@ function applyTheme(theme) {
   const root = document.documentElement;
   const tabPos = theme.tabPosition || 'left';
   const gradientDir = (tabPos === 'left' || tabPos === 'right') ? '180deg' : '135deg';
-
+  const tabGradientDir = 'to right';
   root.style.setProperty('--accent', theme.accent);
   root.style.setProperty('--surface', theme.gradient ? `linear-gradient(135deg, ${theme.surface}, ${theme.gradientSurface})` : theme.surface);
   root.style.setProperty('--panel', theme.panel);
@@ -1662,8 +1662,8 @@ function applyTheme(theme) {
   root.style.setProperty('--accent-soft', hexToRgba(theme.accent, 0.12));
   root.style.setProperty('--border-color', theme.borderColor);
   root.style.setProperty('--border-width', theme.borderWidth);
-  root.style.setProperty('--tab-active-bg', theme.gradient ? `linear-gradient(135deg, ${theme.tabActiveBg}, ${theme.gradientTabActive})` : theme.tabActiveBg);
-  root.style.setProperty('--tab-inactive-bg', theme.gradient ? `linear-gradient(135deg, ${theme.tabInactiveBg}, ${theme.gradientTabInactive})` : theme.tabInactiveBg);
+  root.style.setProperty('--tab-active-bg', theme.gradient ? `linear-gradient(${tabGradientDir}, ${theme.tabActiveBg}, ${theme.gradientTabActive} 100%)` : theme.tabActiveBg);
+  root.style.setProperty('--tab-inactive-bg', theme.gradient ? `linear-gradient(${tabGradientDir}, ${theme.tabInactiveBg}, ${theme.gradientTabInactive} 100%)` : theme.tabInactiveBg);
   root.style.setProperty('--tab-active-text', theme.tabActiveText);
   root.style.setProperty('--tab-inactive-text', theme.tabInactiveText);
   root.style.setProperty('--settings-font-color', theme.settingsFontColor);
