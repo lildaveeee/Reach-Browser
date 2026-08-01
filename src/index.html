@@ -79,48 +79,57 @@
           <button class="settings-tab" data-tab="personalisation" role="tab" data-i18n="tabPersonalisation">Personalisation</button>
           <button class="settings-tab" data-tab="privacy" role="tab" data-i18n="tabPrivacy">Privacy</button>
           <button class="settings-tab" data-tab="history" role="tab" data-i18n="tabHistory">History</button>
+          <button class="settings-tab" data-tab="devtools" role="tab" style="display:none;">Dev Tools</button>
         </div>
         <div class="settings-body">
 
           <!--general-->
           <section class="settings-section active" data-section="general">
             <h3 data-i18n="tabGeneral">General</h3>
-            <div class="settings-control" style="margin-top:24px;">
-              <label for="startup-page-url" data-i18n="startupPageLabel">Custom startup page</label>
-              <input type="text" id="startup-page-url" data-i18n-placeholder="startupPagePlaceholder" placeholder="https://example.com" />
-              <div style="font-size:0.8rem;color:var(--muted);margin-top:2px;" data-i18n="startupPageHint">Opened when the app launches instead of your default search engine</div>
-            </div>
-            <div class="settings-control switch-control">
-              <label for="use-startup-page" data-i18n="useStartupPageLabel">Use startup page on launch</label>
-              <input type="checkbox" id="use-startup-page" />
-            </div>
-            <div class="settings-control switch-control">
-              <label for="restore-last-session" data-i18n="restoreLastSessionLabel">Restore last session on startup</label>
-              <input type="checkbox" id="restore-last-session" />
+            <div class="settings-control">
+              <label for="search-engine-select" data-i18n="searchEngineLabel" style="font-weight:400;" >Default search engine</label>
+              <select id="search-engine-select">
+                <option value="startpage">Startpage</option>
+                <option value="duckduckgo">DuckDuckGo</option>
+                <option value="google">Google</option>
+                <option value="bing">Bing</option>
+                <option value="brave">Brave Search</option>
+                <option value="wikipedia">Wikipedia</option>
+                <option value="ecosia">Ecosia</option>
+                <option value="kagi">Kagi</option>
+                <option value="reddit">Reddit</option>
+                <option value="youtube">YouTube</option>
+                <option value="github">GitHub</option>
+                <option value="ebay">eBay</option>
+                <option value="irs">IRS</option>
+              </select>
             </div>
             <div class="settings-control" style="margin-top:18px;">
-              <label for="new-tab-mode" data-i18n="newTabModeLabel">New tab opens as</label>
+              <label for="new-tab-mode" data-i18n="newTabModeLabel" style="font-weight: 400;">New tabs opens as</label>
               <select id="new-tab-mode">
                 <option value="search" data-i18n="newTabSearch">Default search engine</option>
                 <option value="startup" data-i18n="newTabStartup">Custom startup page</option>
                 <option value="blank" data-i18n="newTabBlank">Blank page</option>
               </select>
             </div>
-            <div class="settings-control" style="margin-top:18px;margin-bottom:18px;">
-              <label for="zoom-level" data-i18n="zoomLevelLabel">Interface zoom</label>
-              <div style="display:flex;align-items:center;gap:10px;margin-top:6px;">
-                <input type="range" id="zoom-level" min="50" max="175" step="5" value="100"
-                  style="flex:1;accent-color:var(--accent);" />
-                <span id="zoom-level-display"
-                  style="font-size:0.85rem;color:var(--settings-font-color);min-width:40px;text-align:right;font-weight:600;">100%</span>
+            <div class="settings-control" style="margin-top:24px;">
+              <label for="startup-page-url" data-i18n="startupPageLabel" style="font-weight:400;">Custom startup page</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="startup-page-url" data-i18n-placeholder="startupPagePlaceholder" placeholder="https://example.com" style="flex:1;min-width:0;" />
+                <input type="checkbox" id="use-startup-page" style="flex-shrink:0;" />
               </div>
+              <div style="font-size:0.8rem;color:var(--muted);margin-top:2px;" data-i18n="startupPageHint">Opened when the app launches instead of your default search engine</div>
+            </div>
+            <div class="settings-control switch-control">
+              <label for="restore-last-session" data-i18n="restoreLastSessionLabel" style="font-weight: 400;">Restore last session on startup</label>
+              <input type="checkbox" id="restore-last-session" />
             </div>
             <div class="settings-control switch-control" style="margin-top:24px;">
-              <label for="suspend-idle-tabs" data-i18n="suspendIdleLabel">Suspend idle tabs</label>
+              <label for="suspend-idle-tabs" data-i18n="suspendIdleLabel" style="font-weight: 400;">Suspend idle tabs</label>
               <input type="checkbox" id="suspend-idle-tabs" />
             </div>
             <div id="suspend-dep" class="settings-control hidden" style="margin-left:18px;">
-              <label for="suspend-after-minutes" data-i18n="suspendAfterLabel">Suspend after</label>
+              <label for="suspend-after-minutes" data-i18n="suspendAfterLabel" style="font-weight: 400;">Suspend after</label>
               <select id="suspend-after-minutes">
                 <option value="1" data-i18n="minute1">1 minute</option>
                 <option value="2" data-i18n="minutes2">2 minutes</option>
@@ -133,15 +142,24 @@
               </select>
             </div>
             <div class="settings-control switch-control" style="margin-top:24px;">
-              <label for="hardware-acceleration-toggle" data-i18n="hardwareAcceleration">Hardware acceleration</label>
+              <label for="hardware-acceleration-toggle" data-i18n="hardwareAcceleration" style="font-weight: 400;">Hardware acceleration</label>
               <input type="checkbox" id="hardware-acceleration-toggle" />
             </div>
             <div id="hw-accel-restart-note" class="hidden" style="font-size:0.82rem;color:var(--accent);margin-top:-8px;padding-bottom:8px;">
               <span data-i18n="restartRequired">Restart required to apply this change.</span>
               <button id="hw-accel-restart-btn" class="settings-action" style="margin-left:8px;" data-i18n="restartNow">Restart now</button>
             </div>
+            <div class="settings-control" style="margin-top:18px;margin-bottom:18px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <label for="zoom-level" data-i18n="zoomLevelLabel" style="font-weight:400;white-space:nowrap;">Interface zoom</label>
+                <input type="range" id="zoom-level" min="50" max="175" step="5" value="100"
+                  style="flex:1;accent-color:var(--accent);" />
+                <span id="zoom-level-display"
+                  style="font-size:0.85rem;color:var(--settings-font-color);min-width:40px;text-align:right;font-weight:600;">100%</span>
+              </div>
+            </div>
             <div class="settings-control" style="margin-top:18px;">
-              <label for="language-select" data-i18n="language">Language</label>
+              <h3 data-i18n="language">Language</h3>
               <select id="language-select">
                 <option value="en">English</option>
                 <option value="es">Español</option>
@@ -149,9 +167,16 @@
                 <option value="de">Deutsch</option>
               </select>
             </div>
+            <div class="settings-control switch-control" style="margin-top:18px;">
+              <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+                <label for="dev-mode-toggle" style="font-weight:400;">Developer mode</label>
+                <p style="font-size:0.8rem;color:var(--muted);margin:2px 0 0;">Adds a Dev Tools tab with performance metrics and diagnostics</p>
+              </div>
+              <input type="checkbox" id="dev-mode-toggle" />
+            </div>
             <div class="settings-control" style="padding: 2px 0 8px;">
               <h3 data-i18n="updatesTitle">Updates</h3>
-              <button id="check-update-btn" class="settings-action" data-i18n="checkUpdates">Check for updates</button>
+              <button id="check-update-btn" class="settings-action" data-i18n="checkUpdates" style="font-weight: 400;">Check for updates</button>
               <div id="update-status" style="font-size:0.82rem;color:var(--muted);padding:2px 0 8px;"></div>
             </div>
             <h3 style="padding: 16px;"></h3>
@@ -263,10 +288,6 @@
               <label for="theme-tab-active-bg" data-i18n="themeTabActiveBg">Selected tab color</label>
               <input type="color" id="theme-tab-active-bg" />
             </div>
-            <div class="settings-control switch-control">
-              <label for="rounded-corners-toggle" data-i18n="roundedCorners">Rounded corners</label>
-              <input type="checkbox" id="rounded-corners-toggle" />
-            </div>
             <div class="settings-control theme-gradient-dependent hidden">
               <label for="theme-gradient-tab-active" data-i18n="themeGradientTabActive">Selected tab gradient color</label>
               <input type="color" id="theme-gradient-tab-active" />
@@ -290,10 +311,6 @@
             <div class="settings-control">
               <label for="theme-settings-font-color" data-i18n="themeSettingsFontColor">Settings font color</label>
               <input type="color" id="theme-settings-font-color" />
-            </div>
-            <div class="settings-control switch-control">
-              <label for="theme-gradient" data-i18n="enableGradient">Enable gradient</label>
-              <input type="checkbox" id="theme-gradient" />
             </div>
             <div class="settings-control">
               <label for="theme-surface-pattern" data-i18n="surfacePattern">Panel surface pattern</label>
@@ -333,6 +350,14 @@
               </label>
               <input type="range" id="vertical-tab-width" min="5" max="30" step="1" value="10">
             </div>
+            <div class="settings-control switch-control">
+              <label for="theme-gradient" data-i18n="enableGradient">Enable gradient</label>
+              <input type="checkbox" id="theme-gradient" />
+            </div>
+            <div class="settings-control switch-control">
+              <label for="rounded-corners-toggle" data-i18n="roundedCorners">Rounded corners</label>
+              <input type="checkbox" id="rounded-corners-toggle" />
+            </div>
             <h4 data-i18n="savedThemes">Saved themes</h4>
             <div class="settings-control">
               <div class="theme-actions-row">
@@ -350,26 +375,8 @@
           <!-- privacy-->
           <section class="settings-section" data-section="privacy">
             <h3 data-i18n="tabPrivacy">Privacy</h3>
-            <div class="settings-control">
-              <label for="search-engine-select" data-i18n="searchEngineLabel">Default search engine</label>
-              <select id="search-engine-select">
-                <option value="startpage">Startpage</option>
-                <option value="duckduckgo">DuckDuckGo</option>
-                <option value="google">Google</option>
-                <option value="bing">Bing</option>
-                <option value="brave">Brave Search</option>
-                <option value="wikipedia">Wikipedia</option>
-                <option value="ecosia">Ecosia</option>
-                <option value="kagi">Kagi</option>
-                <option value="reddit">Reddit</option>
-                <option value="youtube">YouTube</option>
-                <option value="github">GitHub</option>
-                <option value="ebay">eBay</option>
-                <option value="irs">IRS</option>
-              </select>
-            </div>
             <div class="settings-control switch-control">
-              <label for="cookie-enabled" data-i18n="enableCookies">Enable cookies</label>
+              <label for="cookie-enabled" data-i18n="enableCookies" style="font-weight:400;" >Enable cookies</label>
               <input type="checkbox" id="cookie-enabled" />
             </div>
             <div class="settings-control">
@@ -382,26 +389,44 @@
               </select>
             </div>
             <div class="settings-control">
-              <label data-i18n="cookieExceptions">Cookie exceptions</label>
+              <label data-i18n="cookieExceptions" style="font-weight:400;" >Cookie exceptions</label>
               <div id="cookie-exceptions">
                 <div class="cookie-exception-row">
                   <input type="text" placeholder="example.com" />
-                  <select>
+                  <select style="width:120px !important;">
                     <option value="allow" data-i18n="allow">Allow</option>
                     <option value="block" data-i18n="block">Block</option>
                   </select>
                 </div>
                 <div class="cookie-exception-row">
                   <input type="text" placeholder="example.com" />
-                  <select>
+                  <select style="width:120px !important;">
                     <option value="allow" data-i18n="allow">Allow</option>
                     <option value="block" data-i18n="block">Block</option>
                   </select>
                 </div>
               </div>
             </div>
+            <div class="settings-control switch-control">
+              <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+                <label for="spoof-hardware" style="font-weight:400;" data-i18n="spoofHardware">Spoof Hardware</label>
+                <p class="settings-desc" style="font-size:0.82rem;color:var(--muted);padding:2px 0" data-i18n="spoofHardwareDesc">Hide hardware from websites</p>
+              </div>
+              <input type="checkbox" id="spoof-hardware" />
+            </div>
+            <div class="settings-control" style="display:flex;align-items:center;">
+              <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+                <label for="spoofed-os" style="font-weight:400;" data-i18n="spoofedOS">Spoofed OS</label>
+                <p class="settings-desc" style="font-size:0.82rem;color:var(--muted);padding:2px 0">Select the operating system to report to websites</p>
+              </div>
+              <select id="spoofed-os" style="width:120px;flex-shrink:0; ">
+                <option value="windows">Windows</option>
+                <option value="macos">macOS</option>
+                <option value="linux">Linux</option>
+              </select>
+            </div>
             <div class="settings-control switch-control" style="margin-top:24px;">
-              <label for="adblock-enabled" style="font-weight:600;" data-i18n="enableAdBlock">Enable ad blocker</label>
+              <label for="adblock-enabled" style="font-weight:400;" data-i18n="enableAdBlock">Enable ad blocker</label>
               <input type="checkbox" id="adblock-enabled" />
             </div>
             <div class="settings-control" style="margin-top:4px;">
@@ -434,6 +459,106 @@
               style="height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(124,58,237,0.25) transparent;padding-right:4px;"
             ></div>
             <h3 style="padding: 16px;"></h3>
+          </section>
+
+          <!-- devtools -->
+          <section class="settings-section" data-section="devtools">
+            <h3>Dev Tools</h3>
+
+            <div class="settings-control switch-control">
+              <div style="display:flex;flex-direction:column;flex:1;min-width:0;">
+                <label for="perf-overlay-toggle" style="font-weight:400;">Performance overlay</label>
+                <p style="font-size:0.8rem;color:var(--muted);margin:2px 0 0;">Shows FPS, latency and memory in the top-left corner</p>
+              </div>
+              <input type="checkbox" id="perf-overlay-toggle" />
+            </div>
+
+            <div style="display:none">
+              <div id="perf-fps"></div>
+              <div id="perf-latency"></div>
+              <div id="perf-mem"></div>
+            </div>
+
+            <h3 style="margin-top:16px;">Active Tab</h3>
+            <div class="settings-control">
+              <div id="perf-webview" style="font-size:0.82rem;color:var(--settings-font-color);display:flex;flex-wrap:wrap;gap:12px;line-height:1.6;">—</div>
+            </div>
+
+            <h3 style="margin-top:16px;">Shell Timing</h3>
+            <div class="settings-control">
+              <div id="perf-nav-timing" style="font-size:0.82rem;color:var(--settings-font-color);display:flex;flex-wrap:wrap;gap:12px;line-height:1.6;">—</div>
+            </div>
+
+            <h3 style="margin-top:16px;">Network</h3>
+
+            <div class="settings-control">
+              <label style="font-weight:400;">Ping &amp; speed</label>
+              <button id="network-test-btn" class="settings-action" onclick="runNetworkTest()">Run test</button>
+            </div>
+
+            <div class="settings-control" style="flex-direction:column;align-items:stretch;gap:14px;padding-top:0;">
+              <div style="display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;">
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;">Cloudflare</div>
+                  <div style="display:flex;align-items:baseline;gap:4px;">
+                    <span id="ping-cf" style="font-size:1.05rem;font-weight:700;color:var(--settings-font-color);font-variant-numeric:tabular-nums;">—</span>
+                    <span style="font-size:0.72rem;color:var(--muted);">ms</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;">Google</div>
+                  <div style="display:flex;align-items:baseline;gap:4px;">
+                    <span id="ping-google" style="font-size:1.05rem;font-weight:700;color:var(--settings-font-color);font-variant-numeric:tabular-nums;">—</span>
+                    <span style="font-size:0.72rem;color:var(--muted);">ms</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;">GitHub</div>
+                  <div style="display:flex;align-items:baseline;gap:4px;">
+                    <span id="ping-github" style="font-size:1.05rem;font-weight:700;color:var(--settings-font-color);font-variant-numeric:tabular-nums;">—</span>
+                    <span style="font-size:0.72rem;color:var(--muted);">ms</span>
+                  </div>
+                </div>
+                <div style="width:1px;background:var(--border-color);align-self:stretch;margin:0 2px;flex-shrink:0;"></div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px;">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M12 4v16M5 11l7-7 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Download
+                  </div>
+                  <div style="display:flex;align-items:baseline;gap:4px;">
+                    <span id="speed-download" style="font-size:1.05rem;font-weight:700;color:var(--settings-font-color);font-variant-numeric:tabular-nums;">—</span>
+                    <span style="font-size:0.72rem;color:var(--muted);">Mbps</span>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:0.72rem;color:var(--muted);margin-bottom:3px;display:flex;align-items:center;gap:4px;">
+                    <svg width="9" height="9" viewBox="0 0 24 24" fill="none"><path d="M12 20V4M5 13l7 7 7-7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Upload
+                  </div>
+                  <div style="display:flex;align-items:baseline;gap:4px;">
+                    <span id="speed-upload" style="font-size:1.05rem;font-weight:700;color:var(--settings-font-color);font-variant-numeric:tabular-nums;">—</span>
+                    <span style="font-size:0.72rem;color:var(--muted);">Mbps</span>
+                  </div>
+                </div>
+              </div>
+
+              <div id="network-test-status" style="font-size:0.78rem;color:var(--muted);min-height:16px;"></div>
+              <div id="network-test-track" style="height:2px;border-radius:2px;background:var(--border-color);display:none;">
+                <div id="network-test-fill" style="height:100%;border-radius:2px;background:var(--accent);width:0%;transition:width 0.3s;"></div>
+              </div>
+            </div>
+
+            <h3 style="margin-top:16px;">Console</h3>
+            <div class="settings-control" style="flex-direction:column;align-items:stretch;gap:6px;">
+              <div style="display:flex;justify-content:flex-end;">
+                <button class="settings-action" onclick="clearPerfLog()">Clear</button>
+              </div>
+              <div id="perf-log" style="max-height:200px;overflow-y:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.74rem;scrollbar-width:thin;scrollbar-color:rgba(124,58,237,0.25) transparent;line-height:1.6;">
+                <div style="color:var(--muted);">No warnings or errors captured yet.</div>
+              </div>
+            </div>
+
+            <h3 style="padding:16px;"></h3>
           </section>
         </div>
       </div>
